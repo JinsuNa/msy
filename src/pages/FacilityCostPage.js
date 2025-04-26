@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import axios from "axios"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs"
 import { Link } from "react-router-dom"
 
@@ -16,14 +15,43 @@ const FacilityCostPage = () => {
     const fetchFacilityCost = async () => {
       try {
         setLoading(true)
-        // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-        // GET /api/facilities/{id}/cost - 시설 비용 정보 조회
-        const response = await axios.get(`/api/facilities/${id}/cost`)
-        setFacility(response.data)
+
+        // 백엔드 API가 준비되지 않았으므로 임시 데이터 사용
+        setTimeout(() => {
+          // 더미 데이터
+          const dummyFacility = {
+            id: id,
+            name: "행복요양원",
+            monthlyCost: 1500000,
+            deposit: 5000000,
+            additionalCosts: [
+              { name: "간호 서비스", cost: 300000, note: "월 기준" },
+              { name: "물리치료", cost: 200000, note: "월 기준" },
+              { name: "식사 제공", cost: 450000, note: "월 기준, 하루 3식" },
+              { name: "특별 활동", cost: 100000, note: "월 기준, 선택사항" },
+            ],
+            insuranceCoverage: [
+              { grade: "1", personalCost: 520000, insuranceSupport: 1430000 },
+              { grade: "2", personalCost: 480000, insuranceSupport: 1260000 },
+              { grade: "3", personalCost: 450000, insuranceSupport: 1180000 },
+              { grade: "4", personalCost: 430000, insuranceSupport: 1100000 },
+              { grade: "5", personalCost: 400000, insuranceSupport: 1030000 },
+            ],
+            costNotes: [
+              "위 비용은 참고용이며 실제 비용은 상담 후 결정됩니다.",
+              "장기요양보험 적용 시 본인부담금은 소득 수준에 따라 달라질 수 있습니다.",
+              "특별한 의료 서비스가 필요한 경우 추가 비용이 발생할 수 있습니다.",
+              "입소 시 건강검진 비용은 별도입니다.",
+            ],
+          }
+
+          setFacility(dummyFacility)
+          setLoading(false)
+          setError(null)
+        }, 500)
       } catch (err) {
         console.error("비용 정보를 불러오는 중 오류가 발생했습니다:", err)
         setError("비용 정보를 불러오는 중 오류가 발생했습니다.")
-      } finally {
         setLoading(false)
       }
     }

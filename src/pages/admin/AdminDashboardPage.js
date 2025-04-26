@@ -7,6 +7,8 @@ import { Button } from "../../components/ui/Button"
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "../../components/ui/Tabs"
 import Skeleton from "../../components/ui/Skeleton"
 import "../../styles/AdminDashboardPage.css"
+import { Link } from "react-router-dom"
+import { BarChart3, ShoppingCart, Users, CreditCard, Package, TrendingUp } from 'lucide-react'
 
 // Chart.js 라이브러리 임포트
 import {

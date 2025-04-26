@@ -17,22 +17,35 @@ const FacilityDetailPage = () => {
     const fetchFacility = async () => {
       try {
         setLoading(true)
-        // API 호출: 시설 상세 정보 가져오기
-        // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-        // GET /api/facilities/{id} - 시설 상세 정보 조회
-        const response = await axios.get(`/api/facilities/${id}`)
-        setFacility(response.data)
 
-        // 즐겨찾기 상태 확인
-        // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-        // GET /api/users/favorites - 사용자의 즐겨찾기 목록 조회
-        const favoritesResponse = await axios.get("/api/users/favorites")
-        const favorites = favoritesResponse.data
-        setIsFavorite(favorites.some((fav) => fav.id === id))
+        // 백엔드 API가 준비되지 않았으므로 임시 데이터 사용
+        setTimeout(() => {
+          // 더미 데이터
+          const dummyFacility = {
+            id: id,
+            name: "행복요양원",
+            type: "요양원",
+            address: "서울시 강남구 역삼동 123-45",
+            phone: "02-1234-5678",
+            description:
+              "행복요양원은 어르신들의 건강과 행복한 노후를 위해 최선을 다하고 있습니다. 전문 의료진과 요양보호사들이 24시간 상주하며 어르신들을 돌봐드립니다.",
+            capacity: 50,
+            establishedYear: 2010,
+            operatingHours: "24시간",
+            images: ["/modern-hospital-exterior.png"],
+            tags: ["전문 의료진", "24시간 케어", "물리치료실"],
+            services: ["기본 간호 서비스", "물리치료", "작업치료", "인지재활프로그램", "식사 제공"],
+            amenities: ["물리치료실", "작업치료실", "공용 휴게실", "정원", "도서관"],
+          }
+
+          setFacility(dummyFacility)
+          setIsFavorite(false) // 기본값은 즐겨찾기 안됨
+          setLoading(false)
+          setError(null)
+        }, 500)
       } catch (err) {
         console.error("시설 정보를 불러오는 중 오류가 발생했습니다:", err)
         setError("시설 정보를 불러오는 중 오류가 발생했습니다.")
-      } finally {
         setLoading(false)
       }
     }

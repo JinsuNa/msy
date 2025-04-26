@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import axios from "axios"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs"
 import { Link } from "react-router-dom"
 
@@ -20,14 +19,44 @@ const FacilityReviewPage = () => {
     const fetchReviews = async () => {
       try {
         setLoading(true)
-        // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-        // GET /api/facilities/{id}/reviews - 시설 리뷰 목록 조회
-        const response = await axios.get(`/api/facilities/${id}/reviews`)
-        setReviews(response.data)
+
+        // 백엔드 API가 준비되지 않았으므로 임시 데이터 사용
+        setTimeout(() => {
+          // 더미 데이터
+          const dummyReviews = [
+            {
+              id: 1,
+              userName: "김철수",
+              rating: 5,
+              content:
+                "어머니를 모시고 있는데 시설이 깨끗하고 직원분들이 친절해서 만족합니다. 특히 식사가 영양가 있고 맛있어서 좋아요.",
+              createdAt: "2023-05-15T09:30:00Z",
+            },
+            {
+              id: 2,
+              userName: "이영희",
+              rating: 4,
+              content:
+                "전반적으로 만족스럽습니다. 프로그램도 다양하고 어르신들이 지루하지 않게 잘 돌봐주십니다. 다만 주차 공간이 조금 부족한 점이 아쉽습니다.",
+              createdAt: "2023-04-22T14:15:00Z",
+            },
+            {
+              id: 3,
+              userName: "박지민",
+              rating: 5,
+              content:
+                "아버지께서 3개월째 이용 중인데 건강 상태가 많이 좋아지셨어요. 물리치료사 선생님이 특히 잘 봐주셔서 감사합니다.",
+              createdAt: "2023-03-10T11:45:00Z",
+            },
+          ]
+
+          setReviews(dummyReviews)
+          setLoading(false)
+          setError(null)
+        }, 500)
       } catch (err) {
         console.error("리뷰를 불러오는 중 오류가 발생했습니다:", err)
         setError("리뷰를 불러오는 중 오류가 발생했습니다.")
-      } finally {
         setLoading(false)
       }
     }
@@ -52,12 +81,17 @@ const FacilityReviewPage = () => {
     }
 
     try {
-      // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-      // POST /api/facilities/{id}/reviews - 시설 리뷰 작성
-      const response = await axios.post(`/api/facilities/${id}/reviews`, newReview)
+      // 백엔드 API가 준비되지 않았으므로 임시 처리
+      const newReviewData = {
+        id: reviews.length + 1,
+        userName: "사용자",
+        rating: newReview.rating,
+        content: newReview.content,
+        createdAt: new Date().toISOString(),
+      }
 
       // 새 리뷰를 목록에 추가
-      setReviews([response.data, ...reviews])
+      setReviews([newReviewData, ...reviews])
 
       // 입력 폼 초기화
       setNewReview({

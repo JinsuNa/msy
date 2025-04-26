@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import axios from "axios"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/Tabs"
 import { Link } from "react-router-dom"
 
@@ -21,14 +20,54 @@ const FacilityQuestionPage = () => {
     const fetchQuestions = async () => {
       try {
         setLoading(true)
-        // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-        // GET /api/facilities/{id}/questions - 시설 문의 목록 조회
-        const response = await axios.get(`/api/facilities/${id}/questions`)
-        setQuestions(response.data)
+
+        // 백엔드 API가 준비되지 않았으므로 임시 데이터 사용
+        setTimeout(() => {
+          // 더미 데이터
+          const dummyQuestions = [
+            {
+              id: 1,
+              title: "입소 절차에 대해 문의드립니다",
+              content: "어머니(85세)를 모시고 싶은데 입소 절차와 필요한 서류에 대해 알고 싶습니다.",
+              userName: "김철수",
+              createdAt: "2023-05-20T10:15:00Z",
+              isPrivate: false,
+              isMine: true,
+              answer:
+                "안녕하세요. 입소를 위해서는 장기요양인정서, 건강진단서, 신분증 사본이 필요합니다. 자세한 상담은 전화로 문의주시면 안내해 드리겠습니다.",
+              answeredAt: "2023-05-21T09:30:00Z",
+            },
+            {
+              id: 2,
+              title: "면회 시간이 어떻게 되나요?",
+              content: "주말에 방문하려고 하는데 면회 가능한 시간을 알려주세요.",
+              userName: "이영희",
+              createdAt: "2023-05-18T14:20:00Z",
+              isPrivate: false,
+              isMine: false,
+              answer: "안녕하세요. 면회 시간은 매일 오전 10시부터 오후 5시까지입니다. 주말에도 동일하게 운영됩니다.",
+              answeredAt: "2023-05-19T11:45:00Z",
+            },
+            {
+              id: 3,
+              title: "개인 물품 반입 문의",
+              content: "입소 시 개인 물품은 어느 정도까지 가져갈 수 있나요?",
+              userName: "박지민",
+              createdAt: "2023-05-15T16:30:00Z",
+              isPrivate: false,
+              isMine: false,
+              answer: null,
+              answeredAt: null,
+            },
+          ]
+
+          setQuestions(dummyQuestions)
+          setLoading(false)
+          setError(null)
+        }, 500)
       } catch (err) {
         console.error("문의를 불러오는 중 오류가 발생했습니다:", err)
         setError("문의를 불러오는 중 오류가 발생했습니다.")
-      } finally {
         setLoading(false)
       }
     }
@@ -53,12 +92,21 @@ const FacilityQuestionPage = () => {
     }
 
     try {
-      // TODO: 백엔드 개발자는 아래 엔드포인트를 구현해야 합니다.
-      // POST /api/facilities/{id}/questions - 시설 문의 작성
-      const response = await axios.post(`/api/facilities/${id}/questions`, newQuestion)
+      // 백엔드 API가 준비되지 않았으므로 임시 처리
+      const newQuestionData = {
+        id: questions.length + 1,
+        title: newQuestion.title,
+        content: newQuestion.content,
+        userName: "사용자",
+        createdAt: new Date().toISOString(),
+        isPrivate: newQuestion.isPrivate,
+        isMine: true,
+        answer: null,
+        answeredAt: null,
+      }
 
       // 새 문의를 목록에 추가
-      setQuestions([response.data, ...questions])
+      setQuestions([newQuestionData, ...questions])
 
       // 입력 폼 초기화
       setNewQuestion({

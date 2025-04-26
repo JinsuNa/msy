@@ -22,6 +22,7 @@ import CareGradeTestPage from "./pages/CareGradeTestPage"
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage"
 import FacilitiesListPage from "./pages/admin/FacilitiesListPage"
 import ProductsListPage from "./pages/admin/ProductsListPage"
+import SalesManagementPage from "./pages/admin/SalesManagementPage"
 import NoticeCreatePage from "./pages/admin/NoticeCreatePage"
 import InquiriesPage from "./pages/admin/InquiriesPage"
 import AdminProductsNewPage from "./pages/AdminProductsNewPage"
@@ -62,6 +63,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/facilities" element={<FacilitiesListPage />} />
           <Route path="/admin/products" element={<ProductsListPage />} />
+          <Route path="/admin/sales" element={<SalesManagementPage />} />
           <Route path="/admin/notices/new" element={<NoticeCreatePage />} />
           <Route path="/admin/questions" element={<InquiriesPage />} />
           <Route path="/admin/products/new" element={<AdminProductsNewPage />} />

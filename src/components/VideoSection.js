@@ -36,7 +36,7 @@ const videos = [
 
 function VideoSection() {
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-6">
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">영상으로 만나는 요양정보</h2>

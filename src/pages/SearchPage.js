@@ -1,183 +1,301 @@
-"use client"
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import FacilityList from "../components/FacilityList";
+import RegionSelectorModal from "../components/RegionSelectorModal";
+import FilterModal from "./FilterModal";
+import '../styles/SearchPage.css';
 
-import { useState, useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
-import FacilityList from "../components/FacilityList"
-import RegionSelector from "../components/RegionSelector"
-import FacilityTypeSelector from "../components/FacilityTypeSelector"
+import {
+  FaSearch,
+  FaRegHeart,
+  FaHeart,
+  FaMapMarkerAlt,
+  FaChevronLeft
+} from "react-icons/fa";
 
-/**
- * 시설 검색 페이지 컴포넌트
- *
- * @component
- * @description 사용자가 지역과 시설 유형을 선택하여 시설을 검색할 수 있는 페이지
- *
- * @backend_api {GET} /api/facilities - 시설 목록 조회
- * @backend_params {string} region - 선택된 지역
- * @backend_params {string} facilityType - 선택된 시설 유형
- * @backend_params {number} page - 페이지 번호
- * @backend_params {number} limit - 페이지당 항목 수
- * @backend_response {Array} facilities - 시설 목록
- * @backend_response {number} totalCount - 전체 시설 수
- */
 function SearchPage() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [facilities, setFacilities] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [selectedRegion, setSelectedRegion] = useState("전국")
-  const [selectedFacilityType, setSelectedFacilityType] = useState("전체")
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // URL 쿼리 파라미터에서 초기 검색 조건 가져오기
+  const [category, setCategory] = useState("요양병원");
+  const [facilityDropdownOpen, setFacilityDropdownOpen] = useState(false);
+
+  const [selectedRegion, setSelectedRegion] = useState("서울");
+  const [regionModalOpen, setRegionModalOpen] = useState(false);
+
+  const [selectedFacilityType, setSelectedFacilityType] = useState("시설규모");
+  const [facilitySizeModalOpen, setFacilitySizeModalOpen] = useState(false);
+
+  const [selectedEvaluationGrade, setSelectedEvaluationGrade] = useState("평가등급");
+  const [evaluationGradeModalOpen, setEvaluationGradeModalOpen] = useState(false);
+
+  const [selectedSpecialization, setSelectedSpecialization] = useState("특화영역");
+  const [specializationModalOpen, setSpecializationModalOpen] = useState(false);
+
+  const [selectedSort, setSelectedSort] = useState("추천순");
+  const [sortModalOpen, setSortModalOpen] = useState(false);
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [facilities, setFacilities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [likedFacilities, setLikedFacilities] = useState([]);
+
+  const categories = [
+    { label: "요양병원", imgSrc: "/images/요양병원.svg" },
+    { label: "요양원", imgSrc: "/images/요양원.svg" },
+    { label: "실버타운", imgSrc: "/images/실버타운.svg" },
+    { label: "양로원", imgSrc: "/images/양로원.svg" },
+    { label: "주야간보호", imgSrc: "/images/주야간보호.svg" },
+    { label: "단기보호", imgSrc: "/images/단기보호.svg" },
+    { label: "방문요양", imgSrc: "/images/방문요양.svg" },
+    { label: "방문간호", imgSrc: "/images/방문간호.svg" },
+    { label: "방문목욕", imgSrc: "/images/방문목욕.svg" },
+  ];
+
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    const regionParam = params.get("region")
-    const typeParam = params.get("type")
-    const pageParam = params.get("page")
+    fetchFacilities();
+  }, [location.search]);
 
-    if (regionParam) setSelectedRegion(regionParam)
-    if (typeParam) setSelectedFacilityType(typeParam)
-    if (pageParam) setPage(Number.parseInt(pageParam, 10))
-
-    fetchFacilities()
-  }, [location.search])
-
-  // 시설 데이터 가져오기
   const fetchFacilities = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      // 백엔드 API 호출
-      // 개발 중에는 더미 데이터 사용
       setTimeout(() => {
         setFacilities([
           {
             id: 1,
-            name: "행복요양원",
-            type: "요양원",
-            address: "서울시 강남구",
+            name: "프레스토요양병원",
+            address: "서울특별시 강남구 도산대로 209",
+            imgSrc: "/images/프레스토요양병원.jpg",
+            tags: ["등급제외", "소형", "설립 8년", "재활", "치매"],
             rating: 4.5,
             reviewCount: 28,
-            imageUrl: "/intergenerational-care.png",
           },
           {
             id: 2,
-            name: "미소요양병원",
-            type: "요양병원",
-            address: "서울시 서초구",
+            name: "서울센트럴요양병원",
+            address: "서울특별시 영등포구 경인로 767",
+            imgSrc: "/images/서울센트럴요양병원.jpg",
+            tags: ["2등급", "대형", "설립 7년", "재활", "호스피스"],
             rating: 4.2,
             reviewCount: 15,
-            imageUrl: "/modern-hospital-exterior.png",
           },
-          {
-            id: 3,
-            name: "푸른실버타운",
-            type: "실버타운",
-            address: "경기도 고양시",
-            rating: 4.8,
-            reviewCount: 42,
-            imageUrl: "/sunny-senior-gathering.png",
-          },
-        ])
-        setTotalPages(3)
-        setLoading(false)
-        setError(null)
-      }, 500)
-
-      // 실제 API 연동 시 아래 코드 사용
-      /*
-      const response = await axios.get("/api/facilities", {
-        params: {
-          region: selectedRegion !== "전국" ? selectedRegion : undefined,
-          facilityType: selectedFacilityType !== "전체" ? selectedFacilityType : undefined,
-          page: page,
-          limit: 10,
-        },
-      })
-
-      setFacilities(response.data.facilities)
-      setTotalPages(Math.ceil(response.data.totalCount / 10))
-      setLoading(false)
-      */
+        ]);
+        setLoading(false);
+        setError(null);
+      }, 500);
     } catch (err) {
-      console.error("시설 데이터를 불러오는 중 오류가 발생했습니다:", err)
-      setError("시설 정보를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.")
-      setLoading(false)
+      console.error("시설 데이터 오류:", err);
+      setError("시설 정보를 불러올 수 없습니다.");
+      setLoading(false);
     }
-  }
+  };
 
-  // 지역 선택 변경 시 처리
-  const handleRegionChange = (region) => {
-    const regionName = region.province + (region.city ? ` ${region.city}` : "")
-    setSelectedRegion(regionName)
-    updateSearchParams("region", regionName)
-  }
+  const handleLikeToggle = (id) => {
+    setLikedFacilities((prev) =>
+      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+    );
+  };
 
-  // 시설 유형 선택 변경 시 처리
-  const handleFacilityTypeChange = (type) => {
-    setSelectedFacilityType(type)
-    updateSearchParams("type", type)
-  }
+  const handleSelectRegion = (region) => {
+    setSelectedRegion(region);
+    setRegionModalOpen(false);
+  };
 
-  // 페이지 변경 시 처리
-  const handlePageChange = (newPage) => {
-    setPage(newPage)
-    updateSearchParams("page", newPage.toString())
-  }
-
-  // URL 쿼리 파라미터 업데이트
-  const updateSearchParams = (key, value) => {
-    const params = new URLSearchParams(location.search)
-
-    if (value) {
-      params.set(key, value)
-    } else {
-      params.delete(key)
+  const getTagStyle = (tag) => {
+    // '등급' 관련 태그에 스타일 적용
+    if (tag.includes("등급")) {
+      return { color: "#007bff", fontWeight: "bold" }; // 색상과 굵은 글씨 적용
     }
-
-    // 페이지 파라미터 초기화 (지역이나 시설 유형이 변경된 경우)
-    if (key !== "page") {
-      params.delete("page")
-      setPage(1)
-    }
-
-    navigate({
-      pathname: location.pathname,
-      search: params.toString(),
-    })
-  }
-
+    return {}; // 그 외 태그는 기본 스타일
+  };
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">시설 검색</h1>
+    <div className="searchpage-container">
+      {/* 상단바 */}
+      <div className="searchpage-header flex items-center gap-4">
+        {/* 뒤로가기 아이콘 */}
+        <button onClick={() => navigate('/')} className="text-gray-600 text-xl">
+          <FaChevronLeft />
+        </button>
 
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
-        <div className="w-full md:w-1/2">
-          <RegionSelector selectedRegion={selectedRegion} onRegionChange={handleRegionChange} />
-        </div>
-        <div className="w-full md:w-1/2">
-          <FacilityTypeSelector selectedType={selectedFacilityType} onTypeChange={handleFacilityTypeChange} />
+        {/* 카테고리 드롭다운 */}
+        <button
+          onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
+         
+        >
+          {category}
+          <span className="ml-1 text-xs">▼</span>
+        </button>
+
+        {facilityDropdownOpen && (
+          <div className="absolute top-16 left-4 w-56 bg-white border rounded-xl shadow-md z-20 py-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.label}
+                onClick={() => {
+                  setCategory(cat.label);
+                  setFacilityDropdownOpen(false);
+                }}
+                className="flex items-center w-full px-4 py-2 hover:bg-gray-100 text-sm"
+              >
+                <img src={cat.imgSrc} alt={cat.label} className="w-5 h-5 mr-3" />
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 지역 선택 */}
+      <div className="searchpage-region">
+        <button
+          onClick={() => setRegionModalOpen(true)}
+          className="w-full flex items-center justify-between bg-gray-100 px-4 py-3 rounded-md text-sm"
+        >
+          <div className="flex items-center gap-2">
+            <FaMapMarkerAlt className="text-[#007bff]" />
+            <span>{selectedRegion}</span>
+          </div>
+          <span className="text-gray-400">▼</span>
+        </button>
+      </div>
+
+      {/* 검색창 */}
+      <div className="searchpage-search-wrapper">
+        <div className="searchpage-search">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="검색어 입력"
+            className="search-input"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
         </div>
       </div>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      {/* 필터 버튼 */}
+      <div className="searchpage-filters">
+        <div className="flex gap-2 flex-1">
+          <button
+            onClick={() => setFacilitySizeModalOpen(true)}
+            className="border border-black rounded-full px-4 py-2 text-xs"
+          >
+            {selectedFacilityType} ▼
+          </button>
+          <button
+            onClick={() => setEvaluationGradeModalOpen(true)}
+            className="border border-black rounded-full px-4 py-2 text-xs"
+          >
+            {selectedEvaluationGrade} ▼
+          </button>
+          <button
+            onClick={() => setSpecializationModalOpen(true)}
+            className="border border-black rounded-full px-4 py-2 text-xs"
+          >
+            {selectedSpecialization} ▼
+          </button>
         </div>
-      ) : error ? (
-        <div className="text-center text-red-500 py-8">{error}</div>
-      ) : (
-        <FacilityList
-          facilities={facilities}
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+        <button
+          onClick={() => setSortModalOpen(true)}
+          className="border border-black rounded-full px-4 py-2 text-xs"
+        >
+          {selectedSort} ▼
+        </button>
+      </div>
+
+    {/* 시설 목록 */}
+    <div className="searchpage-facility-list">
+        <ul className="facility-list">
+          {facilities.map((facility) => (
+            <li className="facility-item" key={facility.id}>
+              <div className="facility-info">
+                <div className="facility-text">
+                  <h3>{facility.name}</h3>
+                  <p>{facility.address}</p>
+                  <div className="facility-tags">
+                    {facility.tags.map((tag, index) => (
+                      <span
+                        className="facility-tag"
+                        key={index}
+                        style={getTagStyle(tag)} // 태그에 스타일 적용
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="facility-image-container">
+                  <img src={facility.imgSrc || '/default-image.jpg'} alt={facility.name} />
+                  <button onClick={() => handleLikeToggle(facility.id)} className="like-button">
+                    {likedFacilities.includes(facility.id)
+                      ? <FaHeart className="liked" />
+                      : <FaRegHeart />}
+                  </button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 지도 보기 버튼 */}
+      <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2">
+        <button
+          onClick={() => navigate("/map")}
+          className="bg-white border px-6 py-3 rounded-full shadow-md flex items-center gap-2"
+        >
+          <FaMapMarkerAlt />
+          지도보기
+        </button>
+      </div>
+
+      {/* 필터 모달들 */}
+      {facilitySizeModalOpen && (
+        <FilterModal
+          title="시설규모"
+          options={["대형", "중형", "소형"]}
+          selectedOption={selectedFacilityType}
+          onApply={(option) => setSelectedFacilityType(option || "시설규모")}
+          onClose={() => setFacilitySizeModalOpen(false)}
         />
       )}
+      {evaluationGradeModalOpen && (
+        <FilterModal
+          title="평가등급"
+          options={["1등급", "2등급", "3등급", "4등급", "5등급", "등급제외"]}
+          selectedOption={selectedEvaluationGrade}
+          onApply={(option) => setSelectedEvaluationGrade(option || "평가등급")}
+          onClose={() => setEvaluationGradeModalOpen(false)}
+        />
+      )}
+      {specializationModalOpen && (
+        <FilterModal
+          title="특화영역"
+          options={["재활", "치매", "호스피스", "장기입원"]}
+          selectedOption={selectedSpecialization}
+          onApply={(option) => setSelectedSpecialization(option || "특화영역")}
+          onClose={() => setSpecializationModalOpen(false)}
+        />
+      )}
+      {sortModalOpen && (
+        <FilterModal
+          title="정렬방식"
+          options={["추천순", "조회순", "상담많은순", "후기많은순", "찜많은순"]}
+          selectedOption={selectedSort}
+          onApply={(option) => setSelectedSort(option || "추천순")}
+          onClose={() => setSortModalOpen(false)}
+        />
+      )}
+
+      {/* 지역 모달 */}
+      <RegionSelectorModal
+        isOpen={regionModalOpen}
+        onClose={() => setRegionModalOpen(false)}
+        onSelectRegion={handleSelectRegion}
+      />
     </div>
-  )
+  );
 }
 
-export default SearchPage
+export default SearchPage;

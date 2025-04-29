@@ -247,39 +247,52 @@
 }
 
 .empty-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 4rem;
-  height: 4rem;
-  border-radius: 9999px;
-  background-color: #f3f4f6;
-  margin-bottom: 1rem;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 4rem;
+height: 4rem;
+border-radius: 9999px;
+background-color: #f3f4f6;
+margin-bottom: 1rem;
 }
 
-.empty-icon i {
-  font-size: 2rem;
-  color: #9ca3af;
+.empty-cart-icon {
+  width: 2.5rem;  /* 아이콘 크기도 살짝 키움 */
+  height: 2.5rem;
+  color: #9ca3af; /* 연한 회색 아이콘 */
 }
 
 .empty-state h2 {
-  font-size: 1.125rem;
-  font-weight: 500;
+  font-size: 1.25rem; /* 글씨 살짝 키움 */
+  font-weight: 600;
+  color: #111827;
   margin-bottom: 0.5rem;
 }
 
 .empty-state p {
+  font-size: 1rem;
   color: #6b7280;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem; /* 버튼과 더 여백 */
 }
 
+/* 제품 쇼핑하기 버튼 */
 .shop-button {
-  background-color: #3b82f6;
+  background-color: #007bff;/* 진한 파란색 */
+  color: white;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .shop-button:hover {
-  background-color: #2563eb;
+  background-color: #1565c0;
 }
+
 
 /* 반응형 스타일 */
 @media (max-width: 640px) {

@@ -1,39 +1,39 @@
-.chatbot-button {
+/* src/components/chatbot/ChatbotButton.css */
+
+.chatbot-button-fixed {
   position: fixed;
-  bottom: 5rem;
-  right: 1rem;
-  z-index: 50;
-  border-radius: 9999px;
-  width: 3.5rem;
-  height: 3.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  background-color: #3b82f6;
-  padding: 0;
+  bottom: 80px; /* BottomNavigation 위로 띄우기 */
+  right: 20px;
+  z-index: 50; /* 다른 컴포넌트보다 위에 */
+}
+
+.chatbot-button-inner {
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px; /* 완전 둥글게 */
+  background-color: #3b82f6; /* 파란색 */
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.chatbot-button:hover {
-  background-color: #2563eb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .chatbot-button-icon {
-  height: 1.5rem;
-  width: 1.5rem;
-  color: white;
+  width: 24px;
+  height: 24px;
 }
 
 .chatbot-unread-badge {
   position: absolute;
-  top: -0.25rem;
-  right: -0.25rem;
-  background-color: #ef4444;
+  top: -3px;
+  right: 0px;
+  background-color: red;
   color: white;
-  font-size: 0.75rem;
+  font-size: 10px;
+  width: 20px;
+  height: 20px;
   border-radius: 9999px;
-  width: 1.25rem;
-  height: 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;

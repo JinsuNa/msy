@@ -1,47 +1,50 @@
-// src/components/BottomNavigation.jsx
 import { Link, useLocation } from "react-router-dom";
 import { Home, Search, Heart, ShoppingBag, ShoppingCart } from "lucide-react";
+import "./BottomNavigation.css";
 
 function BottomNavigation() {
   const { pathname } = useLocation();
-  const isActive = (path) =>
-    pathname === path ? "text-blue-500" : "text-gray-400";
+  const isActive = (path) => (pathname === path ? "active" : "inactive");
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-10">
-      <div className="grid grid-cols-5 h-14">
-        {/* 홈 */}
-        <Link to="/" className="flex flex-col items-center justify-center">
-          <Home className={`h-5 w-5 ${isActive("/")}`} />
-          <span className={`text-xs mt-1 ${isActive("/")}`}>홈</span>
-        </Link>
+    <>
+      {/* 가짜 spacer 추가: 56px 만큼 차지 */}
+      <div style={{ height: "56px" }} />
 
-        {/* 시설찾기 */}
-        <Link to="/search" className="flex flex-col items-center justify-center">
-          <Search className={`h-5 w-5 ${isActive("/search")}`} />
-          <span className={`text-xs mt-1 ${isActive("/search")}`}>시설찾기</span>
-        </Link>
+      <div className="bottom-navigation">
+        <div className="bottom-navigation-inner">
+          {/* 홈 */}
+          <Link to="/" className="bottom-navigation-link">
+            <Home className={`bottom-navigation-icon ${isActive("/")}`} />
+            <span className={`bottom-navigation-text ${isActive("/")}`}>홈</span>
+          </Link>
 
-        {/* 찜한목록 */}
-        <Link to="/favorites" className="flex flex-col items-center justify-center">
-          <Heart className={`h-5 w-5 ${isActive("/favorites")}`} />
-          <span className={`text-xs mt-1 ${isActive("/favorites")}`}>찜한목록</span>
-        </Link>
+          {/* 시설찾기 */}
+          <Link to="/search" className="bottom-navigation-link">
+            <Search className={`bottom-navigation-icon ${isActive("/search")}`} />
+            <span className={`bottom-navigation-text ${isActive("/search")}`}>시설찾기</span>
+          </Link>
 
-        {/* 스토어 */}
-        <Link to="/products" className="flex flex-col items-center justify-center">
-          {/* isActive에 "/products"를 넘깁니다 */}
-          <ShoppingBag className={`h-5 w-5 ${isActive("/products")}`} />
-          <span className={`text-xs mt-1 ${isActive("/products")}`}>스토어</span>
-        </Link>
+          {/* 찜한목록 */}
+          <Link to="/favorites" className="bottom-navigation-link">
+            <Heart className={`bottom-navigation-icon ${isActive("/favorites")}`} />
+            <span className={`bottom-navigation-text ${isActive("/favorites")}`}>찜한목록</span>
+          </Link>
 
-        {/* 장바구니 */}
-        <Link to="/cart" className="flex flex-col items-center justify-center">
-          <ShoppingCart className={`h-5 w-5 ${isActive("/cart")}`} />
-          <span className={`text-xs mt-1 ${isActive("/cart")}`}>장바구니</span>
-        </Link>
+          {/* 스토어 */}
+          <Link to="/products" className="bottom-navigation-link">
+            <ShoppingBag className={`bottom-navigation-icon ${isActive("/products")}`} />
+            <span className={`bottom-navigation-text ${isActive("/products")}`}>스토어</span>
+          </Link>
+
+          {/* 장바구니 */}
+          <Link to="/cart" className="bottom-navigation-link">
+            <ShoppingCart className={`bottom-navigation-icon ${isActive("/cart")}`} />
+            <span className={`bottom-navigation-text ${isActive("/cart")}`}>장바구니</span>
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { X, Minimize2, ArrowUp, Loader2 } from "lucide-react"
 import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
+import { Bot } from "lucide-react";
 import "./ChatbotWindow.css"
 
 /**
@@ -128,7 +129,7 @@ const ChatbotWindow = ({ onClose, onMinimize }) => {
       <div className="chatbot-header">
         <div className="chatbot-header-title">
           <div className="chatbot-logo">
-            <img src="/logo.svg" alt="챗봇 로고" className="chatbot-logo-image" />
+          <Bot className="chatbot-logo-icon" />
           </div>
           <div>
             <h3 className="chatbot-title">요양정보 도우미</h3>

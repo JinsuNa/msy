@@ -11,6 +11,9 @@ import { Check, AlertCircle } from "lucide-react"
 import axios from "axios"
 import './login.css'
 
+
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 const SignupStep = {
   BasicInfo: 0,
   EmailVerification: 1,
@@ -51,7 +54,7 @@ function SignupForm() {
 
   const handleSendVerification = async () => {
     try {
-      await axios.post("/api/auth/send-verification", { email: formData.email })
+      await axios.post("/auth/send-verification", { email: formData.email })
       setIsVerificationSent(true)
       alert("인증 코드가 이메일로 전송되었습니다.")
     } catch (error) {
@@ -62,7 +65,7 @@ function SignupForm() {
 
   const handleVerifyEmail = async () => {
     try {
-      const response = await axios.post("/api/auth/verify-email", {
+      const response = await axios.post("/auth/verify-email", {
         email: formData.email,
         code: verificationCode,
       })
@@ -94,9 +97,10 @@ function SignupForm() {
 
       if (isUserIdValid && isEmailValid && isPhoneValid) {
         try {
-          const response = await axios.get(`/api/auth/check-userid?userId=${formData.userId}`)
-
-          if (response.data.available) {
+          const response = await axios.get(`${API_BASE_URL}/auth/check-userid?userId=${formData.userId}`)
+          
+          console.log(response)
+          if (!response.data) {
             setCurrentStep(SignupStep.EmailVerification)
           } else {
             setValidation({ ...validation, userId: false })
@@ -119,7 +123,7 @@ function SignupForm() {
 
       if (isPasswordValid && isConfirmValid) {
         try {
-          const response = await axios.post("/api/auth/signup", {
+          const response = await axios.post("/auth/signup", {
             userId: formData.userId,
             email: formData.email,
             phone: formData.phone,

@@ -66,8 +66,10 @@ function LoginForm() {
       if (result.success) {
         // 로그인 성공
         if (result.isAdmin) {
+          alert("관리자 로그인 성공!!!");
           navigate("/admin/dashboard")
         } else {
+          alert("로그인 성공!!!");
           navigate("/")
         }
       } else {

@@ -124,12 +124,21 @@
 }
 
 /* sign.css */
-
+/* login.css */
 .sign-container {
-  width: 100%;
-  max-width: 480px;
+  max-width: 400px;
   margin: 0 auto;
 }
+.sign-btn {
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+}
+.sign-btn:hover {
+  background-color: #2563eb;
+}
+
 
 .sign-title {
   font-size: 24px;
@@ -153,20 +162,7 @@
   align-items: center;
 }
 
-.sign-btn {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
 
-.sign-btn:hover {
-  background-color: #0056b3;
-}
 
 .sign-btn:disabled {
   background-color: #cce5ff;

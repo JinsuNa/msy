@@ -316,39 +316,45 @@ const FacilitiesListPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentFacilities.map((facility) => (
-                  <tr key={facility.id}>
-                    <td>{facility.name}</td>
-                    <td>{facility.type}</td>
-                    <td>{facility.address}</td>
-                    <td>{facility.phone}</td>
-                    <td>{getStatusBadge(facility.status)}</td>
-                    <td>{facility.status === "approved" ? `${facility.rating} (${facility.reviewCount})` : "-"}</td>
-                    <td>{formatDate(facility.createdAt)}</td>
-                    <td className="admin-actions">
-                      <Button variant="outline" size="sm" onClick={() => handleViewDetail(facility.id)}>
-                        상세
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(facility.id)}>
-                        수정
-                      </Button>
-                      {facility.status === "pending" && (
-                        <Button variant="success" size="sm" onClick={() => handleStatusChange(facility.id, "approved")}>
-                          승인
-                        </Button>
-                      )}
-                      {facility.status === "pending" && (
-                        <Button variant="danger" size="sm" onClick={() => handleStatusChange(facility.id, "rejected")}>
-                          거부
-                        </Button>
-                      )}
-                      <Button variant="danger" size="sm" onClick={() => handleDelete(facility.id)}>
-                        삭제
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+  {currentFacilities.map((facility) => (
+    <tr key={facility.id}>
+      <td>{facility.name}</td>
+      <td>{facility.type}</td>
+      <td>{facility.address}</td>
+      <td>{facility.phone}</td>
+      <td>{getStatusBadge(facility.status)}</td>
+      <td>{facility.status === "approved" ? `${facility.rating} (${facility.reviewCount})` : "-"}</td>
+      <td>{formatDate(facility.createdAt)}</td>
+      <td className="admin-actions">
+        {/* 상세 버튼 임시 비활성화 */}
+        {/* 
+        <Button variant="outline" size="sm" onClick={() => handleViewDetail(facility.id)}>
+          상세
+        </Button>
+        */}
+
+        <Button variant="outline" size="sm" onClick={() => handleEdit(facility.id)}>
+          수정
+        </Button>
+
+        {facility.status === "pending" && (
+          <Button variant="success" size="sm" onClick={() => handleStatusChange(facility.id, "approved")}>
+            승인
+          </Button>
+        )}
+        {facility.status === "pending" && (
+          <Button variant="danger" size="sm" onClick={() => handleStatusChange(facility.id, "rejected")}>
+            거부
+          </Button>
+        )}
+        <Button variant="danger" size="sm" onClick={() => handleDelete(facility.id)}>
+          삭제
+        </Button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
             </table>
           </div>
 

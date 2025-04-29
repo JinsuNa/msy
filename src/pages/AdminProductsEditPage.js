@@ -1,269 +1,242 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { ChevronLeft } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import { Textarea } from "../components/ui/Textarea"
-import { Select } from "../components/ui/Select"
-import { Label } from "../components/ui/Label"
+import Checkbox from "../components/ui/Checkbox"
 import "../styles/AdminProductsEditPage.css"
 
 const AdminProductsEditPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     discountPrice: "",
+    stock: "",
     category: "",
     description: "",
-    stock: "",
-    images: [],
+    imageUrls: "",
+    specifications: [
+      { label: "재질", value: "" },
+      { label: "무게", value: "" },
+      { label: "최대 하중", value: "" },
+      { label: "높이 조절 범위", value: "" },
+    ],
+    features: [],
+    isPromoted: false,
+    isRecommended: false,
   })
-  const [imageFiles, setImageFiles] = useState([])
-  const [previewImages, setPreviewImages] = useState([])
 
-  useEffect(() => {
-    // TODO: 백엔드 API 연동 - 제품 상세 정보 가져오기
-    const fetchProductData = async () => {
-      try {
-        setIsLoading(true)
-        // 실제 구현 시 아래 코드를 API 호출로 대체
-        const response = await fetch(`/api/products/${id}`)
-        if (!response.ok) {
-          throw new Error("제품 정보를 불러오는데 실패했습니다.")
-        }
-        const data = await response.json()
-
-        setFormData({
-          name: data.name,
-          price: data.price,
-          discountPrice: data.discountPrice || "",
-          category: data.category,
-          description: data.description,
-          stock: data.stock,
-          images: data.images || [],
-        })
-
-        // 기존 이미지 미리보기 설정
-        setPreviewImages(data.images || [])
-
-        setIsLoading(false)
-      } catch (err) {
-        setError(err.message)
-        setIsLoading(false)
-      }
-    }
-
-    fetchProductData()
-  }, [id])
+  const featureOptions = [
+    "경량 디자인",
+    "접이식 구조",
+    "방수 가능",
+    "미끄럼 방지",
+    "조절 가능한 높이",
+    "인체공학적 설계",
+    "쉬운 세척",
+    "내구성 강화",
+    "휴대성 우수",
+    "안전 잠금 장치",
+  ]
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+    const { name, value, type, checked } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }))
   }
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files)
-    setImageFiles([...imageFiles, ...files])
-
-    // 이미지 미리보기 생성
-    const newPreviewImages = files.map((file) => URL.createObjectURL(file))
-    setPreviewImages([...previewImages, ...newPreviewImages])
+  const handleFeatureToggle = (feature) => {
+    setFormData((prev) => ({
+      ...prev,
+      features: prev.features.includes(feature)
+        ? prev.features.filter((f) => f !== feature)
+        : [...prev.features, feature],
+    }))
   }
 
-  const removeImage = (index) => {
-    // 기존 이미지인지 새로 추가된 이미지인지 확인
-    const isExistingImage = index < formData.images.length
-
-    if (isExistingImage) {
-      // 기존 이미지 제거
-      const updatedImages = [...formData.images]
-      updatedImages.splice(index, 1)
-      setFormData({
-        ...formData,
-        images: updatedImages,
-      })
-    } else {
-      // 새로 추가된 이미지 제거
-      const newIndex = index - formData.images.length
-      const updatedImageFiles = [...imageFiles]
-      updatedImageFiles.splice(newIndex, 1)
-      setImageFiles(updatedImageFiles)
-    }
-
-    // 미리보기 이미지 제거
-    const updatedPreviews = [...previewImages]
-    updatedPreviews.splice(index, 1)
-    setPreviewImages(updatedPreviews)
+  const handleSpecChange = (index, field, value) => {
+    const specs = [...formData.specifications]
+    specs[index][field] = value
+    setFormData((prev) => ({ ...prev, specifications: specs }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleAddSpec = () => {
+    setFormData((prev) => ({
+      ...prev,
+      specifications: [...prev.specifications, { label: "", value: "" }],
+    }))
+  }
+
+  const handleRemoveSpec = (index) => {
+    const specs = formData.specifications.filter((_, i) => i !== index)
+    setFormData((prev) => ({ ...prev, specifications: specs }))
+  }
+
+  const handleSubmit = (e) => {
     e.preventDefault()
-
-    try {
-      setIsLoading(true)
-
-      // TODO: 백엔드 API 연동 - 제품 정보 업데이트
-      // 이미지 파일 업로드 처리
-      const formDataToSend = new FormData()
-      imageFiles.forEach((file) => {
-        formDataToSend.append("images", file)
-      })
-
-      // 기존 이미지 정보 추가
-      formDataToSend.append("existingImages", JSON.stringify(formData.images))
-
-      // 제품 정보 추가
-      Object.keys(formData).forEach((key) => {
-        if (key !== "images") {
-          formDataToSend.append(key, formData[key])
-        }
-      })
-
-      // 실제 구현 시 아래 코드를 API 호출로 대체
-      const response = await fetch(`/api/products/${id}`, {
-        method: "PUT",
-        body: formDataToSend,
-      })
-
-      if (!response.ok) {
-        throw new Error("제품 정보 업데이트에 실패했습니다.")
-      }
-
-      alert("제품 정보가 성공적으로 업데이트되었습니다.")
-      navigate("/admin/products")
-    } catch (err) {
-      setError(err.message)
-      setIsLoading(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    if (!window.confirm("정말로 이 제품을 삭제하시겠습니까?")) {
-      return
-    }
-
-    try {
-      setIsLoading(true)
-
-      // TODO: 백엔드 API 연동 - 제품 삭제
-      // 실제 구현 시 아래 코드를 API 호출로 대체
-      const response = await fetch(`/api/products/${id}`, {
-        method: "DELETE",
-      })
-
-      if (!response.ok) {
-        throw new Error("제품 삭제에 실패했습니다.")
-      }
-
-      alert("제품이 성공적으로 삭제되었습니다.")
-      navigate("/admin/products")
-    } catch (err) {
-      setError(err.message)
-      setIsLoading(false)
-    }
-  }
-
-  if (isLoading) {
-    return <div className="admin-products-edit-loading">로딩 중...</div>
-  }
-
-  if (error) {
-    return <div className="admin-products-edit-error">오류: {error}</div>
+    alert("상품 수정 완료!")
+    navigate("/admin/products")
   }
 
   return (
-    <div className="admin-products-edit-container">
-      <h1 className="admin-products-edit-title">제품 수정</h1>
+    <div className="bg-white px-6 py-10 max-w-5xl mx-auto text-sm">
+    <div className="mb-6">
+  <Link to="/admin/products" className="flex items-center gap-1 text-lg font-semibold text-gray-700">
+    <ChevronLeft className="h-5 w-5" />
+    <span>상품 정보 수정</span>
+  </Link>
+</div>
 
-      <form onSubmit={handleSubmit} className="admin-products-edit-form">
-        <div className="form-group">
-          <Label htmlFor="name">제품명</Label>
-          <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
-        </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <Label htmlFor="price">가격 (원)</Label>
-            <Input id="price" name="price" type="number" value={formData.price} onChange={handleChange} required />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <label className="block text-sm font-medium">상품명</label>
+            <Input name="name" value={formData.name} onChange={handleChange} placeholder="상품명을 입력하세요" />
+
+            <label className="block text-sm font-medium">카테고리</label>
+            <Input name="category" value={formData.category} onChange={handleChange} placeholder="카테고리를 입력하세요" />
+
+            <label className="block text-sm font-medium">가격 (원)</label>
+            <Input name="price" type="number" value={formData.price} onChange={handleChange} placeholder="가격을 입력하세요" />
+
+            <label className="block text-sm font-medium">할인 가격 (원, 선택사항)</label>
+            <Input name="discountPrice" type="number" value={formData.discountPrice} onChange={handleChange} placeholder="할인가를 입력하세요" />
+
+            <label className="block text-sm font-medium">재고 수량</label>
+            <Input name="stock" type="number" value={formData.stock} onChange={handleChange} placeholder="재고수량을 입력하세요" />
+
+           {/* 프로모션 상품 체크박스 */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="isPromoted"
+                  checked={formData.isPromoted}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm">프로모션 상품</span>
+              </div>
+
+              {/* 추천 상품 체크박스 */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="isRecommended"
+                  checked={formData.isRecommended}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-sm">추천 상품</span>
+              </div>
+
           </div>
 
-          <div className="form-group">
-            <Label htmlFor="discountPrice">할인가 (원, 선택사항)</Label>
-            <Input
-              id="discountPrice"
-              name="discountPrice"
-              type="number"
-              value={formData.discountPrice}
-              onChange={handleChange}
-            />
+          <div className="space-y-4">
+            <label className="block text-sm font-medium">상품 설명</label>
+            <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="상품에 대한 설명을 입력하세요" />
+
+            <label className="block text-sm font-medium">이미지 URL (쉼표 구분)</label>
+            <Textarea name="imageUrls" value={formData.imageUrls} onChange={handleChange} rows={3} placeholder="/image1.png, /image2.png, ..." />
+
+            <label className="block text-sm font-medium mt-4">상품 특징</label>
+            <div className="grid grid-cols-2 gap-2">
+              {featureOptions.map((feature) => (
+                <label key={feature} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.features.includes(feature)}
+                    onChange={() => handleFeatureToggle(feature)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm">{feature}</span>
+                </label>
+              ))}
+            </div>
+
           </div>
         </div>
 
-        <div className="form-row">
-          <div className="form-group">
-            <Label htmlFor="category">카테고리</Label>
-            <Select id="category" name="category" value={formData.category} onChange={handleChange} required>
-              <option value="">카테고리 선택</option>
-              <option value="mobility">이동 보조</option>
-              <option value="bathroom">욕실 용품</option>
-              <option value="bedroom">침실 용품</option>
-              <option value="daily">일상 생활 용품</option>
-              <option value="medical">의료 용품</option>
-            </Select>
+        <div>
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-base font-semibold">상품 사양</h2>
+            <Button
+              type="button"
+              onClick={handleAddSpec}
+              className="border border-gray-300 text-sm text-gray-700 rounded px-3 py-1 hover:bg-gray-100"
+            >
+              + 사양 추가
+            </Button>
           </div>
 
-          <div className="form-group">
-            <Label htmlFor="stock">재고 수량</Label>
-            <Input id="stock" name="stock" type="number" value={formData.stock} onChange={handleChange} required />
-          </div>
-        </div>
-
-        <div className="form-group">
-          <Label htmlFor="description">제품 설명</Label>
-          <Textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={5}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <Label htmlFor="images">제품 이미지</Label>
-          <Input id="images" name="images" type="file" accept="image/*" multiple onChange={handleImageChange} />
-          <p className="image-help-text">이미지는 최대 5개까지 업로드 가능합니다.</p>
-
-          <div className="image-preview-container">
-            {previewImages.map((src, index) => (
-              <div key={index} className="image-preview-item">
-                <img src={src || "/placeholder.svg"} alt={`제품 이미지 ${index + 1}`} />
-                <button type="button" className="remove-image-btn" onClick={() => removeImage(index)}>
-                  ✕
-                </button>
+          <div className="space-y-2">
+            {formData.specifications.map((spec, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                {idx < 4 ? (
+                  <>
+                    <Input
+                      value={spec.label}
+                      readOnly
+                      className="bg-gray-100 w-[160px] h-[40px] text-sm"
+                    />
+                    <Input
+                      value={spec.value}
+                      onChange={(e) => handleSpecChange(idx, "value", e.target.value)}
+                      placeholder="값 입력"
+                      className="h-[40px] text-sm"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      value={spec.label}
+                      onChange={(e) => handleSpecChange(idx, "label", e.target.value)}
+                      placeholder="항목 입력"
+                      className="w-[160px] h-[40px] text-sm"
+                    />
+                    <div className="flex items-center relative w-full h-[40px]">
+                      <Input
+                        className="w-full h-full pr-10 text-sm"
+                        value={spec.value}
+                        onChange={(e) => handleSpecChange(idx, "value", e.target.value)}
+                        placeholder="값 입력"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSpec(idx)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="form-actions">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "저장 중..." : "저장하기"}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => navigate("/admin/products")}>
+        <div className="flex justify-end gap-2 mt-8">
+          <Button
+            type="button"
+            onClick={() => navigate("/admin/products")}
+            className="facility-button cancel"
+          >
             취소
           </Button>
-          <Button type="button" variant="destructive" onClick={handleDelete}>
-            제품 삭제
+          <Button
+            type="submit"
+            className="facility-button submit"
+          >
+            저장하기
           </Button>
         </div>
       </form>

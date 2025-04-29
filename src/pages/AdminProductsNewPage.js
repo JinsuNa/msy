@@ -1,271 +1,250 @@
 "use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
+import { ChevronLeft, X } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import { Textarea } from "../components/ui/Textarea"
 import { Select } from "../components/ui/Select"
-import { Label } from "../components/ui/Label"
 import "../styles/AdminProductsNewPage.css"
 
 const AdminProductsNewPage = () => {
   const navigate = useNavigate()
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
-    price: "",
-    discountRate: "",
     category: "",
-    description: "",
+    price: "",
+    discountPrice: "",
     stock: "",
+    description: "",
+    shippingFee: "",
+    manufacturer: "",
+    origin: "국내",
+    specifications: [{ label: "", value: "" }],
     images: [],
   })
-  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+    setFormData({ ...formData, [name]: value })
+  }
 
-    // 에러 상태 초기화
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null,
-      })
-    }
+  const handleAddSpec = () => {
+    setFormData({ ...formData, specifications: [...formData.specifications, { label: "", value: "" }] })
+  }
+
+  const handleSpecChange = (index, field, value) => {
+    const newSpecs = [...formData.specifications]
+    newSpecs[index][field] = value
+    setFormData({ ...formData, specifications: newSpecs })
+  }
+
+  const handleRemoveSpec = (index) => {
+    const newSpecs = formData.specifications.filter((_, i) => i !== index)
+    setFormData({ ...formData, specifications: newSpecs })
   }
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files)
-
-    // 미리보기 URL 생성
-    const imageFiles = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
-
-    setFormData({
-      ...formData,
-      images: [...formData.images, ...imageFiles],
-    })
+    const newImages = files.map(file => ({ file, preview: URL.createObjectURL(file) }))
+    setFormData({ ...formData, images: [...formData.images, ...newImages] })
   }
 
-  const removeImage = (index) => {
+  const handleRemoveImage = (index) => {
     const newImages = [...formData.images]
-
-    // 미리보기 URL 해제
     URL.revokeObjectURL(newImages[index].preview)
-
     newImages.splice(index, 1)
-    setFormData({
-      ...formData,
-      images: newImages,
-    })
+    setFormData({ ...formData, images: newImages })
   }
 
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!formData.name.trim()) newErrors.name = "제품명을 입력해주세요"
-    if (!formData.price.trim()) newErrors.price = "가격을 입력해주세요"
-    if (!formData.category) newErrors.category = "카테고리를 선택해주세요"
-    if (!formData.description.trim()) newErrors.description = "제품 설명을 입력해주세요"
-    if (!formData.stock.trim()) newErrors.stock = "재고 수량을 입력해주세요"
-    if (formData.images.length === 0) newErrors.images = "최소 1개 이상의 이미지를 업로드해주세요"
-
-    return newErrors
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-
-    const validationErrors = validateForm()
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      // TODO: 백엔드 API 연동 - 제품 등록 API 호출
-      // FormData 객체를 사용하여 이미지 파일과 함께 전송
-      const productFormData = new FormData()
-
-      // 텍스트 데이터 추가
-      productFormData.append("name", formData.name)
-      productFormData.append("price", formData.price)
-      productFormData.append("discountRate", formData.discountRate || "0")
-      productFormData.append("category", formData.category)
-      productFormData.append("description", formData.description)
-      productFormData.append("stock", formData.stock)
-
-      // 이미지 파일 추가
-      formData.images.forEach((image, index) => {
-        productFormData.append(`image${index}`, image.file)
-      })
-
-      // API 호출 (실제 구현 시 대체)
-      console.log("제품 등록 요청:", Object.fromEntries(productFormData))
-
-      // 성공 시 제품 목록 페이지로 이동
-      alert("제품이 성공적으로 등록되었습니다.")
-      navigate("/admin/products")
-    } catch (error) {
-      console.error("제품 등록 오류:", error)
-      alert("제품 등록 중 오류가 발생했습니다. 다시 시도해주세요.")
-    } finally {
-      setIsSubmitting(false)
-    }
+    console.log(formData)
+    alert("상품 등록 완료!")
+    navigate("/admin/products")
   }
 
   return (
     <div className="admin-products-new-page">
-      <div className="admin-header">
-        <h1>새 제품 등록</h1>
-        <Button onClick={() => navigate("/admin/products")} variant="outline">
-          목록으로 돌아가기
-        </Button>
+      <div className="page-header-full">
+        <div className="header-inner">
+          <Link to="/admin/products" className="flex items-center gap-1">
+            <ChevronLeft className="h-5 w-5 text-gray-600" />
+            <span className="page-title">새 상품 등록</span>
+          </Link>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-section">
-          <h2>기본 정보</h2>
-
-          <div className="form-group">
-            <Label htmlFor="name">제품명 *</Label>
-            <Input id="name" name="name" value={formData.name} onChange={handleChange} error={errors.name} />
-            {errors.name && <p className="error-text">{errors.name}</p>}
+          <div className="form-row">
+            <div className="form-group">
+              <label>상품명 *</label>
+              <Input name="name" value={formData.name} onChange={handleChange} placeholder="상품명을 입력하세요" />
+            </div>
+            <div className="form-group">
+              <label>카테고리 *</label>
+              <Select name="category" value={formData.category} onChange={handleChange}>
+                <option value="">카테고리 선택</option>
+                <option value="mobility">이동 보조</option>
+                <option value="bathroom">욕실 용품</option>
+                <option value="bedroom">침실 용품</option>
+                <option value="daily">일상 생활용품</option>
+                <option value="medical">의료 용품</option>
+              </Select>
+            </div>
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <Label htmlFor="price">가격 (원) *</Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                value={formData.price}
-                onChange={handleChange}
-                error={errors.price}
-              />
-              {errors.price && <p className="error-text">{errors.price}</p>}
+              <label>판매가격 (원) *</label>
+              <Input name="price" value={formData.price} onChange={handleChange} placeholder="판매가격을 입력하세요" />
             </div>
-
             <div className="form-group">
-              <Label htmlFor="discountRate">할인율 (%)</Label>
-              <Input
-                id="discountRate"
-                name="discountRate"
-                type="number"
-                min="0"
-                max="100"
-                value={formData.discountRate}
-                onChange={handleChange}
-              />
+              <label>할인가격 (원)</label>
+              <Input name="discountPrice" value={formData.discountPrice} onChange={handleChange} placeholder="할인가격을 입력하세요" />
+            </div>
+            <div className="form-group">
+              <label>재고수량 *</label>
+              <Input name="stock" value={formData.stock} onChange={handleChange} placeholder="재고수량을 입력하세요" />
             </div>
           </div>
 
           <div className="form-group">
-            <Label htmlFor="category">카테고리 *</Label>
-            <Select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              error={errors.category}
-              options={[
-                { value: "", label: "카테고리 선택" },
-                { value: "mobility", label: "이동 보조" },
-                { value: "bathroom", label: "욕실 용품" },
-                { value: "bedroom", label: "침실 용품" },
-                { value: "daily", label: "일상 생활용품" },
-                { value: "medical", label: "의료 용품" },
-              ]}
-            />
-            {errors.category && <p className="error-text">{errors.category}</p>}
+            <label>상품 설명</label>
+            <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="상품에 대한 설명을 입력하세요" />
           </div>
 
           <div className="form-group">
-            <Label htmlFor="stock">재고 수량 *</Label>
-            <Input
-              id="stock"
-              name="stock"
-              type="number"
-              min="0"
-              value={formData.stock}
-              onChange={handleChange}
-              error={errors.stock}
-            />
-            {errors.stock && <p className="error-text">{errors.stock}</p>}
-          </div>
-        </div>
+            <div className="flex justify-between items-center mb-2">
+              <h2>상품 사양</h2>
+              <Button
+                type="button"
+                className="add-spec-button"  // ✅ 이걸 추가!
+                onClick={handleAddSpec}
+              >
+                + 사양 추가
+              </Button>
 
-        <div className="form-section">
-          <h2>제품 설명</h2>
-
-          <div className="form-group">
-            <Label htmlFor="description">상세 설명 *</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={6}
-              error={errors.description}
-            />
-            {errors.description && <p className="error-text">{errors.description}</p>}
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h2>제품 이미지</h2>
-
-          <div className="form-group">
-            <Label htmlFor="images">이미지 업로드 *</Label>
-            <div className="image-upload-container">
-              <label className="image-upload-button">
-                <Input
-                  id="images"
-                  name="images"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  className="hidden-input"
-                />
-                이미지 선택
-              </label>
-              <span className="help-text">최대 5개까지 업로드 가능합니다.</span>
             </div>
-            {errors.images && <p className="error-text">{errors.images}</p>}
+            {formData.specifications.map((spec, index) => (
+  <div
+    key={index}
+    className="form-row"
+    style={{
+      display: "flex",
+      gap: "0.5rem",
+      position: "relative",
+      marginBottom: "0.5rem",
+      alignItems: "center",
+    }}
+  >
+    <Input
+      placeholder="항목 (예: 크기, 무게)"
+      value={spec.label}
+      onChange={(e) => handleSpecChange(index, "label", e.target.value)}
+    />
+    <Input
+      placeholder="값 (예: 10cm x 20cm, 500g)"
+      value={spec.value}
+      onChange={(e) => handleSpecChange(index, "value", e.target.value)}
+      className="pr-10"
+    />
 
-            {formData.images.length > 0 && (
-              <div className="image-preview-container">
-                {formData.images.map((image, index) => (
-                  <div key={index} className="image-preview-item">
-                    <img src={image.preview || "/placeholder.svg"} alt={`미리보기 ${index + 1}`} />
-                    <button type="button" onClick={() => removeImage(index)} className="remove-image-button">
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+    {/* index > 0일 때만 ✕ 버튼 표시 */}
+    {index > 0 && (
+      <button
+        type="button"
+        onClick={() => handleRemoveSpec(index)}
+        style={{
+          position: "absolute",
+          top: "4px",
+          right: "4px",
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          lineHeight: 1,
+          cursor: "pointer",
+        }}
+      >
+        <X className="w-4 h-4 text-gray-400 hover:text-red-500" />
+      </button>
+    )}
+  </div>
+))}
+
+
           </div>
-        </div>
 
-        <div className="form-actions">
-          <Button type="button" variant="outline" onClick={() => navigate("/admin/products")}>
-            취소
-          </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "등록 중..." : "제품 등록"}
-          </Button>
+          <div className="form-row">
+            <div className="form-group">
+              <label>배송비 (원)</label>
+              <Input name="shippingFee" value={formData.shippingFee} onChange={handleChange} placeholder="배송비를 입력하세요" />
+            </div>
+            <div className="form-group">
+              <label>제조사</label>
+              <Input name="manufacturer" value={formData.manufacturer} onChange={handleChange} placeholder="제조사를 입력하세요" />
+            </div>
+            <div className="form-group">
+              <label>원산지</label>
+              <Select name="origin" value={formData.origin} onChange={handleChange}>
+                <option value="국내">국내</option>
+                <option value="해외">해외</option>
+              </Select>
+            </div>
+          </div>
+
+          <h2>상품 이미지</h2>
+          <div
+            className="image-upload-area"
+            onClick={() => document.getElementById("image-upload-input").click()}
+          >
+            <img src="/icons/upload-photo.png" alt="사진 업로드" className="image-upload-icon-img" />
+            <div className="image-upload-text">이미지를 업로드하세요 (최대 5MB)</div>
+            <input
+              id="image-upload-input"
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: "none" }}
+              onChange={handleImageUpload}
+            />
+          </div>
+
+          {formData.images.length > 0 && (
+            <div className="image-preview-list" style={{ display: "flex", gap: "0.5rem", marginTop: "1rem", flexWrap: "wrap" }}>
+              {formData.images.map((img, index) => (
+                <div key={index} style={{ position: "relative" }}>
+                  <img src={img.preview} alt="상품 이미지" className="uploaded-image" style={{ width: "120px", height: "120px", objectFit: "cover", borderRadius: "8px" }} />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    style={{ position: "absolute", top: "4px", right: "4px", background: "transparent", border: "none" }}
+                  >
+                    <X className="w-5 h-5 text-red-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+            <div className="form-actions" style={{ display: "flex", gap: "0.5rem", marginTop: "2rem" }}>
+              <Button
+                type="button"
+                onClick={() => navigate("/admin/products")}
+                className="product-action-button product-cancel-button"
+              >
+                취소
+              </Button>
+              <Button
+                type="submit"
+                className="product-action-button product-submit-button"
+              >
+                상품 등록
+              </Button>
+            </div>
+
         </div>
       </form>
     </div>

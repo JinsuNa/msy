@@ -2,32 +2,17 @@
 
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import { ChevronLeft } from "lucide-react" // 뒤로가기 아이콘 추가
 import "../styles/VideosPage.css"
 
-/**
- * 비디오 페이지 컴포넌트
- *
- * 노인 복지 관련 교육 및 정보 비디오를 표시하는 페이지
- *
- * @returns {JSX.Element}
- */
 const VideosPage = () => {
   const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
-  const [currentTab, setCurrentTab] = useState("all")
 
-  // 백엔드에서 비디오 데이터 가져오기
-  // API 엔드포인트: GET /api/videos?category={category}
-  // 응답 형식: { id, title, category, duration, views, uploadDate, thumbnailUrl, videoUrl }[]
   useEffect(() => {
-    // 실제 구현 시 axios 사용
     const fetchVideos = async () => {
       try {
         setLoading(true)
-        // const response = await axios.get(`/api/videos?category=${currentTab !== 'all' ? currentTab : ''}`);
-        // setVideos(response.data);
-
-        // 임시 데이터
         setTimeout(() => {
           const mockVideos = [
             {
@@ -92,12 +77,7 @@ const VideosPage = () => {
             },
           ]
 
-          if (currentTab !== "all") {
-            setVideos(mockVideos.filter((video) => video.category === currentTab))
-          } else {
-            setVideos(mockVideos)
-          }
-
+          setVideos(mockVideos)
           setLoading(false)
         }, 500)
       } catch (error) {
@@ -107,24 +87,14 @@ const VideosPage = () => {
     }
 
     fetchVideos()
-  }, [currentTab])
-
-  // 카테고리 탭 목록
-  const tabs = [
-    { id: "all", label: "전체" },
-    { id: "교육", label: "교육" },
-    { id: "가이드", label: "가이드" },
-    { id: "정보", label: "정보" },
-    { id: "정책", label: "정책" },
-    { id: "건강", label: "건강" },
-  ]
+  }, [])
 
   return (
     <div className="videos-page">
       <div className="page-header">
         <div className="container">
-          <Link to="/" className="back-button">
-            <i className="fas fa-arrow-left"></i>
+          <Link to="/" className="mr-2">
+            <ChevronLeft className="h-6 w-6 text-gray-600" />
           </Link>
           <h1>교육 영상</h1>
         </div>
@@ -132,18 +102,6 @@ const VideosPage = () => {
 
       <div className="page-content">
         <div className="container">
-          <div className="tabs">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`tab ${currentTab === tab.id ? "active" : ""}`}
-                onClick={() => setCurrentTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
           {loading ? (
             <div className="loading-spinner">
               <div className="spinner"></div>
@@ -176,7 +134,7 @@ const VideosPage = () => {
                     <i className="fas fa-video"></i>
                   </div>
                   <h2>영상이 없습니다</h2>
-                  <p>현재 카테고리에 등록된 영상이 없습니다.</p>
+                  <p>현재 등록된 영상이 없습니다.</p>
                 </div>
               )}
             </div>

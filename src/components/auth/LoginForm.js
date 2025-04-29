@@ -11,7 +11,7 @@ import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
 import Checkbox from "../ui/Checkbox"
-import '../../styles/login.css';  // styles 폴더의 login.css를 임포트
+import './login.css'
 
 
 

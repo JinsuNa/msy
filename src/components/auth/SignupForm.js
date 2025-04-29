@@ -9,7 +9,7 @@ import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
 import { Check, AlertCircle } from "lucide-react"
 import axios from "axios"
-import '../../styles/login.css';  // 수정: sign.css로 연결했어
+import './login.css'
 
 const SignupStep = {
   BasicInfo: 0,

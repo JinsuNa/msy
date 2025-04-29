@@ -96,6 +96,133 @@
 .admin-products-edit-error {
   color: #e53e3e;
 }
+/* src/styles/AdminProductsEditPage.css */
+/* src/styles/AdminProductsEditPage.css */
+
+/* 전체 컨테이너 */
+.admin-products-edit-page {
+  padding: 2rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+/* 인풋과 텍스트에 사용될 기본 크기 */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+/* 라벨과 설명 글자 크기 축소 */
+label {
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* 텍스트 영역 줄맞춤 */
+textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* 상품 사양 인풋 정리 */
+.flex.gap-2.mb-2 input {
+  font-size: 13.5px;
+  padding: 7px 10px;
+}
+
+/* 버튼 크기 줄이기 */
+button,
+button[type="submit"] {
+  font-size: 13.5px;
+  padding: 6px 16px;
+  height: 36px;
+}
+
+
+
+/* 체크박스 텍스트 간격 및 크기 조절 */
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+/* 항목 입력 인풋 (label 입력칸) 사이즈 */
+.spec-label-input {
+  width: 160px;
+  height: 40px;
+  font-size: 14px;
+}
+/* 공통 버튼 스타일 */
+.facility-button {
+  padding: 8px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 100px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* 취소 버튼 */
+.facility-button.cancel {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.facility-button.cancel:hover {
+  background-color: #f9fafb;
+  border-color: #cbd5e1;
+}
+
+/* 저장 버튼 */
+.facility-button.submit {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+  height: 40px;
+}
+
+.facility-button.submit:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+
+
+
+/* 상품 특징 그리드 */
+.grid.grid-cols-2.gap-2 {
+  gap: 8px;
+}
+
+/* 하단 버튼 정렬 */
+.form-actions {
+  margin-top: 2rem;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .grid.grid-cols-2.gap-8 {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+
 
 @media (max-width: 640px) {
   .form-row {

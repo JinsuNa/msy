@@ -41,6 +41,8 @@ function SearchPage() {
   const [error, setError] = useState(null);
   const [likedFacilities, setLikedFacilities] = useState([]);
 
+  
+
   const categories = [
     { label: "요양병원", imgSrc: "/images/요양병원.svg" },
     { label: "요양원", imgSrc: "/images/요양원.svg" },
@@ -162,17 +164,18 @@ function SearchPage() {
 
       {/* 검색창 */}
       <div className="searchpage-search-wrapper">
-        <div className="searchpage-search">
-          <FaSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="검색어 입력"
-            className="search-input"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-        </div>
-      </div>
+  <div className="searchpage-search">
+    <FaSearch className="search-icon" /> {/* 검색 아이콘을 검색창 안에 배치 */}
+    <input
+      type="text"
+      placeholder="검색어 입력"
+      className="search-input"
+      value={searchKeyword}
+      onChange={(e) => setSearchKeyword(e.target.value)}
+    />
+  </div>
+</div>
+
 
       {/* 필터 버튼 */}
       <div className="searchpage-filters">

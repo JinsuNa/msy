@@ -5,48 +5,22 @@ import { Link } from "react-router-dom"
 import { useFavorites } from "../hooks/use-favorites"
 import BottomNavigation from "../components/BottomNavigation"
 import { Button } from "../components/ui/Button"
-import "../styles/FavoritesPage.css"
+import { ChevronLeft } from "lucide-react" // ✅ 추가
+import '../styles/FavoritesPage.css'
 
-/**
- * 찜 목록 페이지 컴포넌트
- *
- * @returns {JSX.Element}
- */
 function FavoritesPage() {
   const { favorites, removeFavorite } = useFavorites()
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // 데이터 로딩 시뮬레이션
     const timer = setTimeout(() => {
       setIsLoading(false)
     }, 500)
 
     return () => clearTimeout(timer)
-
-    // TODO: 백엔드 API 연동 - 사용자가 로그인한 경우 서버에서 찜 목록 가져오기
-    // axios.get('/api/favorites')
-    //   .then(response => {
-    //     // setFavorites(response.data);
-    //     setIsLoading(false);
-    //   })
-    //   .catch(error => {
-    //     console.error('Failed to fetch favorites', error);
-    //     setIsLoading(false);
-    //   });
   }, [])
 
-  /**
-   * 전체 삭제 처리 함수
-   */
   const handleClearAll = () => {
-    // TODO: 백엔드 API 연동 - 사용자가 로그인한 경우 서버에서 찜 목록 전체 삭제
-    // axios.delete('/api/favorites')
-    //   .then(response => {
-    //     // 로컬 상태 업데이트
-    //   })
-    //   .catch(error => console.error('Failed to clear favorites', error));
-
     alert("전체 삭제 기능은 현재 개발 중입니다.")
   }
 
@@ -55,8 +29,9 @@ function FavoritesPage() {
       {/* 헤더 */}
       <header className="page-header">
         <div className="container">
-          <Link to="/" className="back-button">
-            <i className="icon-chevron-left"></i>
+          {/* ✅ 여기만 수정 */}
+          <Link to="/" className="mr-2">
+            <ChevronLeft className="h-6 w-6 text-gray-600" />
           </Link>
           <h1>찜한 목록</h1>
         </div>
@@ -114,12 +89,17 @@ function FavoritesPage() {
           ) : (
             <div className="empty-state">
               <div className="empty-icon">
-                <i className="icon-heart"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" className="empty-heart-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
               </div>
-              <h2>찜한 시설이 없습니다</h2>
-              <p>마음에 드는 시설을 찾아 하트 버튼을 눌러보세요.</p>
+
+              <h2 className="empty-title">찜한 시설이 없습니다</h2>
+              <p className="empty-description">마음에 드는 시설을 찾아 하트 버튼을 눌러보세요.</p>
               <Link to="/search">
-                <Button className="search-button">시설 찾아보기</Button>
+                <button className="empty-search-button">
+                  시설 찾아보기
+                </button>
               </Link>
             </div>
           )}

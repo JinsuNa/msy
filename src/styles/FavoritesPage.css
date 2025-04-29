@@ -213,6 +213,22 @@
 .search-button:hover {
   background-color: #2563eb;
 }
+.empty-search-button {
+  background-color: #007bff;/* 진한 파란색 */
+  color: white;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.empty-search-button:hover {
+  background-color: #1565c0; /* hover 시 조금 더 진한 파랑 */
+}
+
 
 /* 반응형 스타일 */
 @media (max-width: 640px) {

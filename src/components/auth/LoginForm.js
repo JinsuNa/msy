@@ -11,6 +11,9 @@ import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
 import Checkbox from "../ui/Checkbox"
+import '../../styles/login.css';  // styles 폴더의 login.css를 임포트
+
+
 
 function LoginForm() {
   const navigate = useNavigate()
@@ -47,7 +50,7 @@ function LoginForm() {
 
     // 유효성 검사
     if (!loginData.userId || !loginData.password) {
-      setError("아이디와 비밀번호를 ���두 입력해주세요.")
+      setError("아이디와 비밀번호를 모두 입력해주세요.")
       return
     }
 
@@ -79,28 +82,21 @@ function LoginForm() {
 
   // 소셜 로그인 처리
   const handleSocialLogin = (provider) => {
-    /* 
-    백엔드 개발자 참고:
-    소셜 로그인 구현 필요
-    - 카카오: GET /api/auth/kakao
-    - 구글: GET /api/auth/google
-    각 엔드포인트는 해당 OAuth 제공자의 인증 페이지로 리디렉션해야 함
-    */
     alert(`${provider} 로그인 시도`)
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
-      <h2 className="text-2xl font-bold text-center mb-6">로그인</h2>
+    <div className="login-container bg-white p-6 rounded-lg shadow-sm">
+      <h2 className="login-title text-2xl font-bold text-center mb-6">로그인</h2>
 
       {error && (
-        <div className="bg-red-50 p-3 rounded-md mb-4 flex items-start">
+        <div className="login-error bg-red-50 p-3 rounded-md mb-4 flex items-start">
           <AlertCircle className="h-5 w-5 text-red-500 mr-2 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleLogin} className="space-y-4 mb-6">
+      <form onSubmit={handleLogin} className="login-form space-y-4 mb-6">
         <div className="space-y-2">
           <Label htmlFor="userId">아이디</Label>
           <Input
@@ -109,6 +105,7 @@ function LoginForm() {
             placeholder="아이디를 입력하세요"
             value={loginData.userId}
             onChange={handleChange}
+            className="login-input"
           />
         </div>
 
@@ -126,27 +123,21 @@ function LoginForm() {
             placeholder="비밀번호를 입력하세요"
             value={loginData.password}
             onChange={handleChange}
+            className="login-input"
           />
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="login-remember flex items-center space-x-2">
           <Checkbox id="rememberMe" checked={loginData.rememberMe} onCheckedChange={handleCheckboxChange} />
           <label htmlFor="rememberMe" className="text-sm text-gray-600 cursor-pointer">
             로그인 상태 유지
           </label>
         </div>
 
-        <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
+        <Button type="submit" className="login-btn w-full bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
           {isLoading ? "로그인 중..." : "로그인"}
         </Button>
       </form>
-
-      {/* 테스트 계정 안내 */}
-      <div className="mb-6 p-3 bg-blue-50 rounded-md">
-        <h3 className="font-medium text-blue-800 mb-1">테스트 계정</h3>
-        <p className="text-sm text-blue-700 mb-1">관리자: admin / admin123</p>
-        <p className="text-sm text-blue-700">일반 사용자: user / user123</p>
-      </div>
 
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center">
@@ -156,26 +147,28 @@ function LoginForm() {
           <span className="px-2 bg-white text-gray-500">또는</span>
         </div>
       </div>
+      <div className="login-social space-y-3">
+  <button
+    type="button"
+    onClick={() => handleSocialLogin("kakao")}
+    className="login-social-btn kakao-btn w-full flex items-center justify-center space-x-2 py-2.5 border border-yellow-400 bg-yellow-400 rounded-md hover:bg-yellow-500 transition-colors"
+  >
+    <img src="/images/카카오.png" alt="Kakao" className="kakao-img" />
+    <span className="font-medium text-gray-800">카카오로 로그인</span>
+  </button>
 
-      <div className="space-y-3">
-        <button
-          type="button"
-          onClick={() => handleSocialLogin("kakao")}
-          className="w-full flex items-center justify-center space-x-2 py-2.5 border border-yellow-400 bg-yellow-400 rounded-md hover:bg-yellow-500 transition-colors"
-        >
-          <img src="/images/kakao-friends-group.png" alt="Kakao" width={20} height={20} />
-          <span className="font-medium text-gray-800">카카오로 로그인</span>
-        </button>
+  <button
+    type="button"
+    onClick={() => handleSocialLogin("google")}
+    className="login-social-btn google-btn w-full"
+  >
+    <img src="/images/구글.png" alt="Google" className="google-img" />
+    <span className="font-medium text-gray-800">구글로 로그인</span>
+  </button>
+</div>
 
-        <button
-          type="button"
-          onClick={() => handleSocialLogin("google")}
-          className="w-full flex items-center justify-center space-x-2 py-2.5 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-        >
-          <img src="/images/colorful-search-bar.png" alt="Google" width={20} height={20} />
-          <span className="font-medium text-gray-800">구글로 로그인</span>
-        </button>
-      </div>
+
+
 
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
@@ -189,4 +182,4 @@ function LoginForm() {
   )
 }
 
-export default LoginForm
+export default LoginForm;

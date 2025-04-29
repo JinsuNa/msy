@@ -6,6 +6,7 @@ import { useCart } from "../hooks/use-cart"
 import BottomNavigation from "../components/BottomNavigation"
 import { Button } from "../components/ui/Button"
 import "../styles/CartPage.css"
+import { ShoppingCart } from "lucide-react";
 
 /**
  * 장바구니 페이지 컴포넌트
@@ -193,15 +194,15 @@ function CartPage() {
             </div>
           ) : (
             <div className="empty-state">
-              <div className="empty-icon">
-                <i className="icon-shopping-cart"></i>
-              </div>
-              <h2>장바구니가 비어있습니다</h2>
-              <p>필요한 제품을 장바구니에 담아보세요.</p>
-              <Link to="/products">
-                <Button className="shop-button">제품 쇼핑하기</Button>
-              </Link>
+            <div className="empty-icon">
+              <ShoppingCart className="empty-cart-icon" />
             </div>
+            <h2>장바구니가 비어있습니다</h2>
+            <p>필요한 제품을 장바구니에 담아보세요.</p>
+            <Link to="/products">
+              <Button className="shop-button">제품 쇼핑하기</Button>
+            </Link>
+          </div>
           )}
         </div>
       </main>

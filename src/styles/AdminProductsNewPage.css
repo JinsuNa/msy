@@ -138,3 +138,66 @@
   gap: 12px;
   padding: 20px;
 }
+/* src/styles/AdminProductsNewPage.css */
+
+.add-spec-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151; /* 기본 글자색 (회색) */
+  background-color: #fff;
+  border: 1px solid #d1d5db; /* 테두리 */
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.add-spec-button:hover {
+  background-color: #f9fafb; /* 호버시 살짝 밝게 */
+  color: #111827; /* 호버시 글자 조금 더 진하게 */
+}
+
+/* src/styles/AdminProductsNewPage.css */
+
+/* 버튼 기본 스타일 (상품 등록/취소용) */
+.product-action-button {
+  padding: 8px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 100px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  margin-top: -20px;
+}
+
+/* 취소 버튼 스타일 */
+.product-cancel-button {
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.product-cancel-button:hover {
+  background-color: #f9fafb;
+  border-color: #cbd5e1;
+}
+
+/* 상품 등록 버튼 스타일 */
+.product-submit-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #2563eb;
+}
+
+.product-submit-button:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
+

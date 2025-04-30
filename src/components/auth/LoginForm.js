@@ -11,7 +11,7 @@ import { Button } from "../ui/Button"
 import { Input } from "../ui/Input"
 import { Label } from "../ui/Label"
 import Checkbox from "../ui/Checkbox"
-import '../../styles/login.css';  // styles 폴더의 login.css를 임포트
+import './login.css'
 
 
 
@@ -66,8 +66,10 @@ function LoginForm() {
       if (result.success) {
         // 로그인 성공
         if (result.isAdmin) {
+          alert("관리자 로그인 성공!!!");
           navigate("/admin/dashboard")
         } else {
+          alert("로그인 성공!!!");
           navigate("/")
         }
       } else {

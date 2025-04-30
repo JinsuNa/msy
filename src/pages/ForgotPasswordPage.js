@@ -7,7 +7,7 @@ import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import { Label } from "../components/ui/Label"
 import axios from "axios"
-import '../styles/login.css'
+import '../styles/ForgotPassword.css'
 
 function ForgotPasswordPage() {
   const [step, setStep] = useState(1)

@@ -245,21 +245,16 @@
   text-align: center;
   padding: 5rem 0;
 }
-
 .empty-icon {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-width: 4rem;
-height: 4rem;
-border-radius: 9999px;
-background-color: #f3f4f6;
-margin-bottom: 1rem;
+  font-size: 3rem;
+  color: #ccc;
+  margin-bottom: 1rem;
 }
 
+
 .empty-cart-icon {
-  width: 2.5rem;  /* 아이콘 크기도 살짝 키움 */
-  height: 2.5rem;
+  width: 4rem;  /* 아이콘 크기도 살짝 키움 */
+  height: 4rem;
   color: #9ca3af; /* 연한 회색 아이콘 */
 }
 

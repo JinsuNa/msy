@@ -9,7 +9,9 @@
 .page-header {
   background-color: white;
   border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 50px;
 }
+
 
 .page-header .container {
   max-width: 1200px;
@@ -196,3 +198,80 @@
     font-size: 0.875rem;
   }
 }
+
+.header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notice-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background-color: #ffffff; /* ✅ 테이블 전체 흰색 배경 */
+}
+
+.notice-table th,
+.notice-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+  background-color: #ffffff; /* ✅ 셀도 흰색 고정 */
+}
+
+.notice-table th {
+  background-color: #f9fafb; /* ✅ 제목줄(th)만 약간 밝은 회색 유지 */
+  font-weight: 600;
+}
+
+.title-cell {
+  text-align: left;
+}
+
+.notice-link {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.notice-link:hover {
+  text-decoration: underline;
+}
+
+
+.pagination {
+  margin-top: 1rem; /* ✅ 상단 여백 줄임 */
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem; /* ✅ 버튼 간격 좁힘 */
+}
+
+.pagination button {
+  padding: 0.4rem 0.7rem; /* ✅ 버튼 사이즈 축소 */
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 4px;
+  font-size: 0.8rem; /* ✅ 버튼 폰트 사이즈 축소 */
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #1976d2;
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+
+
+.header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+

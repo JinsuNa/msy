@@ -260,6 +260,7 @@ const FacilitiesListPage = () => {
                                     </tbody>
                                 </table>
 
+<<<<<<< HEAD
                                 {
                                     totalPages > 1 && (
                                         <div className="admin-pagination">
@@ -290,6 +291,132 @@ const FacilitiesListPage = () => {
                             </div>
                         )
                 }
+=======
+      <div className="admin-filters">
+        <div className="admin-search">
+          <input
+            type="text"
+            placeholder="시설명 또는 주소로 검색"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="admin-search-input"
+          />
+        </div>
+
+        <div className="admin-filter-group">
+          <select value={filterStatus} onChange={handleStatusFilterChange} className="admin-filter-select">
+            <option value="all">모든 상태</option>
+            <option value="approved">승인됨</option>
+            <option value="pending">대기중</option>
+            <option value="rejected">거부됨</option>
+          </select>
+
+          <select value={filterType} onChange={handleTypeFilterChange} className="admin-filter-select">
+            <option value="all">모든 유형</option>
+            <option value="요양원">요양원</option>
+            <option value="요양병원">요양병원</option>
+            <option value="실버타운">실버타운</option>
+            <option value="방문요양">방문요양</option>
+            <option value="방문간호">방문간호</option>
+            <option value="주야간보호">주야간보호</option>
+          </select>
+        </div>
+      </div>
+
+      {filteredFacilities.length === 0 ? (
+        <div className="admin-empty-state">
+          <p>검색 조건에 맞는 시설이 없습니다.</p>
+        </div>
+      ) : (
+        <>
+          <div className="admin-table-container">
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>시설명</th>
+                  <th>유형</th>
+                  <th>주소</th>
+                  <th>연락처</th>
+                  <th>상태</th>
+                  <th>평점</th>
+                  <th>등록일</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+  {currentFacilities.map((facility) => (
+    <tr key={facility.id}>
+      <td>{facility.name}</td>
+      <td>{facility.type}</td>
+      <td>{facility.address}</td>
+      <td>{facility.phone}</td>
+      <td>{getStatusBadge(facility.status)}</td>
+      <td>{facility.status === "approved" ? `${facility.rating} (${facility.reviewCount})` : "-"}</td>
+      <td>{formatDate(facility.createdAt)}</td>
+      <td className="admin-actions">
+        {/* 상세 버튼 임시 비활성화 */}
+        {/* 
+        <Button variant="outline" size="sm" onClick={() => handleViewDetail(facility.id)}>
+          상세
+        </Button>
+        */}
+
+        <Button variant="outline" size="sm" onClick={() => handleEdit(facility.id)}>
+          수정
+        </Button>
+
+        {facility.status === "pending" && (
+          <Button variant="success" size="sm" onClick={() => handleStatusChange(facility.id, "approved")}>
+            승인
+          </Button>
+        )}
+        {facility.status === "pending" && (
+          <Button variant="danger" size="sm" onClick={() => handleStatusChange(facility.id, "rejected")}>
+            거부
+          </Button>
+        )}
+        <Button variant="danger" size="sm" onClick={() => handleDelete(facility.id)}>
+          삭제
+        </Button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+            </table>
+          </div>
+
+          {totalFilteredPages > 1 && (
+            <div className="admin-pagination">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                이전
+              </Button>
+
+              {[...Array(totalFilteredPages)].map((_, i) => (
+                <Button
+                  key={i + 1}
+                  variant={currentPage === i + 1 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </Button>
+              ))}
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalFilteredPages}
+              >
+                다음
+              </Button>
+>>>>>>> b0178cdb5ee6190554d60fc05e33bda46384d881
             </div>
         </Layout>
     );

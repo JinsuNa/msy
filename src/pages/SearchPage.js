@@ -41,8 +41,6 @@ function SearchPage() {
   const [error, setError] = useState(null);
   const [likedFacilities, setLikedFacilities] = useState([]);
 
-  
-
   const categories = [
     { label: "요양병원", imgSrc: "/images/요양병원.svg" },
     { label: "요양원", imgSrc: "/images/요양원.svg" },
@@ -99,32 +97,31 @@ function SearchPage() {
     );
   };
 
+  const handleGoToDetail = (id) => {
+    navigate(`/facility/${id}`);
+  };
+
   const handleSelectRegion = (region) => {
     setSelectedRegion(region);
     setRegionModalOpen(false);
   };
 
   const getTagStyle = (tag) => {
-    // '등급' 관련 태그에 스타일 적용
     if (tag.includes("등급")) {
-      return { color: "#007bff", fontWeight: "bold" }; // 색상과 굵은 글씨 적용
+      return { color: "#007bff", fontWeight: "bold" };
     }
-    return {}; // 그 외 태그는 기본 스타일
+    return {};
   };
+
   return (
     <div className="searchpage-container">
       {/* 상단바 */}
       <div className="searchpage-header flex items-center gap-4">
-        {/* 뒤로가기 아이콘 */}
         <button onClick={() => navigate('/')} className="text-gray-600 text-xl">
           <FaChevronLeft />
         </button>
 
-        {/* 카테고리 드롭다운 */}
-        <button
-          onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}
-         
-        >
+        <button onClick={() => setFacilityDropdownOpen(!facilityDropdownOpen)}>
           {category}
           <span className="ml-1 text-xs">▼</span>
         </button>
@@ -164,54 +161,46 @@ function SearchPage() {
 
       {/* 검색창 */}
       <div className="searchpage-search-wrapper">
-  <div className="searchpage-search">
-    <FaSearch className="search-icon" /> {/* 검색 아이콘을 검색창 안에 배치 */}
-    <input
-      type="text"
-      placeholder="검색어 입력"
-      className="search-input"
-      value={searchKeyword}
-      onChange={(e) => setSearchKeyword(e.target.value)}
-    />
-  </div>
-</div>
-
+        <div className="searchpage-search">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="검색어 입력"
+            className="search-input"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+          />
+        </div>
+      </div>
 
       {/* 필터 버튼 */}
       <div className="searchpage-filters">
         <div className="flex gap-2 flex-1">
-          <button
-            onClick={() => setFacilitySizeModalOpen(true)}
-            className="border border-black rounded-full px-4 py-2 text-xs"
-          >
+          <button onClick={() => setFacilitySizeModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
             {selectedFacilityType} ▼
           </button>
-          <button
-            onClick={() => setEvaluationGradeModalOpen(true)}
-            className="border border-black rounded-full px-4 py-2 text-xs"
-          >
+          <button onClick={() => setEvaluationGradeModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
             {selectedEvaluationGrade} ▼
           </button>
-          <button
-            onClick={() => setSpecializationModalOpen(true)}
-            className="border border-black rounded-full px-4 py-2 text-xs"
-          >
+          <button onClick={() => setSpecializationModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
             {selectedSpecialization} ▼
           </button>
         </div>
-        <button
-          onClick={() => setSortModalOpen(true)}
-          className="border border-black rounded-full px-4 py-2 text-xs"
-        >
+        <button onClick={() => setSortModalOpen(true)} className="border border-black rounded-full px-4 py-2 text-xs">
           {selectedSort} ▼
         </button>
       </div>
 
-    {/* 시설 목록 */}
-    <div className="searchpage-facility-list">
+      {/* 시설 목록 */}
+      <div className="searchpage-facility-list">
         <ul className="facility-list">
           {facilities.map((facility) => (
-            <li className="facility-item" key={facility.id}>
+            <li
+              className="facility-item"
+              key={facility.id}
+              onClick={() => handleGoToDetail(facility.id)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="facility-info">
                 <div className="facility-text">
                   <h3>{facility.name}</h3>
@@ -221,7 +210,7 @@ function SearchPage() {
                       <span
                         className="facility-tag"
                         key={index}
-                        style={getTagStyle(tag)} // 태그에 스타일 적용
+                        style={getTagStyle(tag)}
                       >
                         {tag}
                       </span>
@@ -230,7 +219,10 @@ function SearchPage() {
                 </div>
                 <div className="facility-image-container">
                   <img src={facility.imgSrc || '/default-image.jpg'} alt={facility.name} />
-                  <button onClick={() => handleLikeToggle(facility.id)} className="like-button">
+                  <button onClick={(e) => {
+                    e.stopPropagation(); // 상세페이지 이동 막기
+                    handleLikeToggle(facility.id);
+                  }} className="like-button">
                     {likedFacilities.includes(facility.id)
                       ? <FaHeart className="liked" />
                       : <FaRegHeart />}
@@ -291,7 +283,6 @@ function SearchPage() {
         />
       )}
 
-      {/* 지역 모달 */}
       <RegionSelectorModal
         isOpen={regionModalOpen}
         onClose={() => setRegionModalOpen(false)}

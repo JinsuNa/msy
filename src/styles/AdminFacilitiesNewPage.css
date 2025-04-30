@@ -16,16 +16,26 @@
   font-weight: 600;
   margin: 0;
 }
-
 .facility-form {
-  background-color: #fff;
+  background-color: transparent; /* 또는 이 줄을 아예 삭제해도 됨 */
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 필요 없으면 이것도 삭제 가능 */
 }
+
+
 
 .form-section {
   padding: 20px;
   border-bottom: 1px solid #eee;
+  margin-top: 0 !important; /* 🔥 필요시 강제로 제거 */
+
+}
+.form-section1 {
+  background-color: #f9fafb; 
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  margin-top: -32px !important; /* 🔥 필요시 강제로 제거 */
+
 }
 
 .form-section h2 {
@@ -33,6 +43,7 @@
   font-weight: 500;
   margin-bottom: 16px;
   color: #333;
+  margin-top: 0; /* 기존 margin 제거 */
 }
 
 .form-group {
@@ -454,41 +465,41 @@ label::after {
 
 
 /* 버튼 기본 스타일 */
-.facility-action-button {
-  padding: 8px 20px;
+.form-actions button {
+  height: 42px;
+  width: 120px; /* ✅ 너비를 고정해버리자 */
+  padding: 0 16px;
   font-size: 14px;
   border-radius: 6px;
   font-weight: 500;
-  min-width: 100px;
-  height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  margin-top: -20px;
+  margin-top: -30px;
 }
 
-/* 취소 버튼 스타일 */
+
+/* 취소 버튼 */
 .facility-cancel-button {
   background-color: #ffffff;
   color: #374151;
   border: 1px solid #d1d5db;
 }
-
 .facility-cancel-button:hover {
   background-color: #f9fafb;
   border-color: #cbd5e1;
 }
 
-/* 시설 등록 버튼 스타일 */
+/* 시설 등록 버튼 */
 .facility-submit-button {
   background-color: #2563eb;
   color: #ffffff;
   border: 1px solid #2563eb;
+  
 }
-
 .facility-submit-button:hover {
   background-color: #1e40af;
   border-color: #1e40af;
 }
+
 

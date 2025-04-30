@@ -1,417 +1,168 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { ChevronLeft } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { Input } from "../components/ui/Input"
 import { Textarea } from "../components/ui/Textarea"
-import { Select } from "../components/ui/Select"
 import Checkbox from "../components/ui/Checkbox"
-import { Label } from "../components/ui/Label"
 import "../styles/AdminFacilitiesEditPage.css"
 
 const AdminFacilitiesEditPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+
   const [formData, setFormData] = useState({
     name: "",
     type: "",
+    region: "",
+    subregion: "",
     address: "",
-    detailAddress: "",
-    zipCode: "",
     phone: "",
-    website: "",
-    description: "",
     capacity: "",
-    staffCount: "",
-    roomTypes: [],
-    amenities: [],
-    programs: [],
-    images: [],
+    rating: "",
+    description: "",
+    imageUrls: "",
+    services: [],
+    facilities: [],
+    isPromoted: false,
+    isCertified: false,
   })
-  const [imageFiles, setImageFiles] = useState([])
-  const [previewImages, setPreviewImages] = useState([])
 
-  useEffect(() => {
-    // TODO: 백엔드 API 연동 - 시설 상세 정보 가져오기
-    const fetchFacilityData = async () => {
-      try {
-        setIsLoading(true)
-        // 실제 구현 시 아래 코드를 API 호출로 대체
-        const response = await fetch(`/api/facilities/${id}`)
-        if (!response.ok) {
-          throw new Error("시설 정보를 불러오는데 실패했습니다.")
-        }
-        const data = await response.json()
+  const servicesOptions = [
+    "24시간 간호 서비스", "작업치료", "인지재활", "투약 관리", "이동 지원",
+    "물리치료", "언어치료", "식사 제공", "목욕 서비스", "응급 의료 지원"
+  ]
 
-        setFormData({
-          name: data.name,
-          type: data.type,
-          address: data.address,
-          detailAddress: data.detailAddress || "",
-          zipCode: data.zipCode,
-          phone: data.phone,
-          website: data.website || "",
-          description: data.description,
-          capacity: data.capacity,
-          staffCount: data.staffCount,
-          roomTypes: data.roomTypes || [],
-          amenities: data.amenities || [],
-          programs: data.programs || [],
-          images: data.images || [],
-        })
-
-        // 기존 이미지 미리보기 설정
-        setPreviewImages(data.images || [])
-
-        setIsLoading(false)
-      } catch (err) {
-        setError(err.message)
-        setIsLoading(false)
-      }
-    }
-
-    fetchFacilityData()
-  }, [id])
+  const facilitiesOptions = [
+    "개인 화장실", "공용 휴게실", "정원", "운동 시설", "카페테리아",
+    "미용실", "도서관", "식당", "종교 시설", "세탁 서비스"
+  ]
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
+    const { name, value, type, checked } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }))
   }
 
-  const handleCheckboxChange = (e, category) => {
-    const { value, checked } = e.target
-
-    if (checked) {
-      setFormData({
-        ...formData,
-        [category]: [...formData[category], value],
-      })
-    } else {
-      setFormData({
-        ...formData,
-        [category]: formData[category].filter((item) => item !== value),
-      })
-    }
+  const handleFeatureToggle = (item, category) => {
+    setFormData((prev) => ({
+      ...prev,
+      [category]: prev[category].includes(item)
+        ? prev[category].filter((i) => i !== item)
+        : [...prev[category], item],
+    }))
   }
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files)
-    setImageFiles([...imageFiles, ...files])
-
-    // 이미지 미리보기 생성
-    const newPreviewImages = files.map((file) => URL.createObjectURL(file))
-    setPreviewImages([...previewImages, ...newPreviewImages])
-  }
-
-  const removeImage = (index) => {
-    // 기존 이미지인지 새로 추가된 이미지인지 확인
-    const isExistingImage = index < formData.images.length
-
-    if (isExistingImage) {
-      // 기존 이미지 제거
-      const updatedImages = [...formData.images]
-      updatedImages.splice(index, 1)
-      setFormData({
-        ...formData,
-        images: updatedImages,
-      })
-    } else {
-      // 새로 추가된 이미지 제거
-      const newIndex = index - formData.images.length
-      const updatedImageFiles = [...imageFiles]
-      updatedImageFiles.splice(newIndex, 1)
-      setImageFiles(updatedImageFiles)
-    }
-
-    // 미리보기 이미지 제거
-    const updatedPreviews = [...previewImages]
-    updatedPreviews.splice(index, 1)
-    setPreviewImages(updatedPreviews)
-  }
-
-  const searchAddress = () => {
-    // TODO: 백엔드 API 연동 - 다음(카카오) 우편번호 검색 API 연동
-    // 실제 구현 시 다음 우편번호 검색 API를 사용하여 주소 검색 기능 구현
-    alert("우편번호 검색 기능은 실제 구현 시 다음(카카오) 우편번호 검색 API를 연동해야 합니다.")
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-
-    try {
-      setIsLoading(true)
-
-      // TODO: 백엔드 API 연동 - 시설 정보 업데이트
-      // 이미지 파일 업로드 처리
-      const formDataToSend = new FormData()
-      imageFiles.forEach((file) => {
-        formDataToSend.append("images", file)
-      })
-
-      // 기존 이미지 정보 추가
-      formDataToSend.append("existingImages", JSON.stringify(formData.images))
-
-      // 시설 정보 추가
-      Object.keys(formData).forEach((key) => {
-        if (key !== "images") {
-          if (Array.isArray(formData[key])) {
-            formDataToSend.append(key, JSON.stringify(formData[key]))
-          } else {
-            formDataToSend.append(key, formData[key])
-          }
-        }
-      })
-
-      // 실제 구현 시 아래 코드를 API 호출로 대체
-      const response = await fetch(`/api/facilities/${id}`, {
-        method: "PUT",
-        body: formDataToSend,
-      })
-
-      if (!response.ok) {
-        throw new Error("시설 정보 업데이트에 실패했습니다.")
-      }
-
-      alert("시설 정보가 성공적으로 업데이트되었습니다.")
-      navigate("/admin/facilities")
-    } catch (err) {
-      setError(err.message)
-      setIsLoading(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    if (!window.confirm("정말로 이 시설을 삭제하시겠습니까?")) {
-      return
-    }
-
-    try {
-      setIsLoading(true)
-
-      // TODO: 백엔드 API 연동 - 시설 삭제
-      // 실제 구현 시 아래 코드를 API 호출로 대체
-      const response = await fetch(`/api/facilities/${id}`, {
-        method: "DELETE",
-      })
-
-      if (!response.ok) {
-        throw new Error("시설 삭제에 실패했습니다.")
-      }
-
-      alert("시설이 성공적으로 삭제되었습니다.")
-      navigate("/admin/facilities")
-    } catch (err) {
-      setError(err.message)
-      setIsLoading(false)
-    }
-  }
-
-  if (isLoading) {
-    return <div className="admin-facilities-edit-loading">로딩 중...</div>
-  }
-
-  if (error) {
-    return <div className="admin-facilities-edit-error">오류: {error}</div>
+    alert("시설 정보 수정 완료!")
+    navigate("/admin/facilities")
   }
 
   return (
-    <div className="admin-facilities-edit-container">
-      <h1 className="admin-facilities-edit-title">시설 정보 수정</h1>
+    <div className="bg-white px-6 py-10 max-w-5xl mx-auto text-sm">
+      <div className="mb-6">
+        <Link to="/admin/facilities" className="flex items-center gap-1 text-lg font-semibold text-gray-700">
+          <ChevronLeft className="h-5 w-5" />
+          <span>시설 정보 수정</span>
+        </Link>
+      </div>
 
-      <form onSubmit={handleSubmit} className="admin-facilities-edit-form">
-        <div className="form-section">
-          <h2 className="section-title">기본 정보</h2>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <label className="block text-sm font-medium">시설명</label>
+            <Input name="name" value={formData.name} onChange={handleChange} placeholder="시설명을 입력하세요" />
 
-          <div className="form-group">
-            <Label htmlFor="name">시설명</Label>
-            <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
-          </div>
+            <label className="block text-sm font-medium">시설 유형</label>
+            <Input name="type" value={formData.type} onChange={handleChange} placeholder="예: 요양원, 요양병원" />
 
-          <div className="form-group">
-            <Label htmlFor="type">시설 유형</Label>
-            <Select id="type" name="type" value={formData.type} onChange={handleChange} required>
-              <option value="">시설 유형 선택</option>
-              <option value="요양원">요양원</option>
-              <option value="요양병원">요양병원</option>
-              <option value="주야간보호">주야간보호</option>
-              <option value="방문요양">방문요양</option>
-              <option value="방문간호">방문간호</option>
-              <option value="방문목욕">방문목욕</option>
-              <option value="단기보호">단기보호</option>
-              <option value="실버타운">실버타운</option>
-              <option value="양로원">양로원</option>
-            </Select>
-          </div>
+            <label className="block text-sm font-medium">지역</label>
+            <Input name="region" value={formData.region} onChange={handleChange} placeholder="예: 서울특별시" />
 
-          <div className="form-group">
-            <Label htmlFor="zipCode">우편번호</Label>
-            <div className="zipcode-input-group">
-              <Input id="zipCode" name="zipCode" value={formData.zipCode} onChange={handleChange} required readOnly />
-              <Button type="button" onClick={searchAddress}>
-                우편번호 검색
-              </Button>
-            </div>
-          </div>
+            <label className="block text-sm font-medium">세부 지역</label>
+            <Input name="subregion" value={formData.subregion} onChange={handleChange} placeholder="예: 강남구" />
 
-          <div className="form-group">
-            <Label htmlFor="address">주소</Label>
-            <Input id="address" name="address" value={formData.address} onChange={handleChange} required readOnly />
-          </div>
+            <label className="block text-sm font-medium">주소</label>
+            <Input name="address" value={formData.address} onChange={handleChange} placeholder="상세 주소 입력" />
 
-          <div className="form-group">
-            <Label htmlFor="detailAddress">상세 주소</Label>
-            <Input id="detailAddress" name="detailAddress" value={formData.detailAddress} onChange={handleChange} />
-          </div>
+            <label className="block text-sm font-medium">전화번호</label>
+            <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="연락처 입력" />
 
-          <div className="form-row">
-            <div className="form-group">
-              <Label htmlFor="phone">전화번호</Label>
-              <Input id="phone" name="phone" value={formData.phone} onChange={handleChange} required />
-            </div>
+            <label className="block text-sm font-medium">수용 인원</label>
+            <Input name="capacity" value={formData.capacity} onChange={handleChange} placeholder="예: 50" />
 
-            <div className="form-group">
-              <Label htmlFor="website">웹사이트 (선택사항)</Label>
-              <Input id="website" name="website" value={formData.website} onChange={handleChange} />
-            </div>
-          </div>
-        </div>
+            <label className="block text-sm font-medium">평점 (0~5)</label>
+            <Input name="rating" value={formData.rating} onChange={handleChange} placeholder="예: 4.5" />
 
-        <div className="form-section">
-          <h2 className="section-title">시설 상세 정보</h2>
-
-          <div className="form-group">
-            <Label htmlFor="description">시설 설명</Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={5}
-              required
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <Label htmlFor="capacity">정원</Label>
-              <Input
-                id="capacity"
-                name="capacity"
-                type="number"
-                value={formData.capacity}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="isPromoted"
+                checked={formData.isPromoted}
                 onChange={handleChange}
-                required
               />
+              <span className="text-sm">프로모션 시설</span>
             </div>
 
-            <div className="form-group">
-              <Label htmlFor="staffCount">직원 수</Label>
-              <Input
-                id="staffCount"
-                name="staffCount"
-                type="number"
-                value={formData.staffCount}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="isCertified"
+                checked={formData.isCertified}
                 onChange={handleChange}
-                required
               />
+              <span className="text-sm">인증된 시설</span>
             </div>
           </div>
-        </div>
 
-        <div className="form-section">
-          <h2 className="section-title">객실 유형</h2>
+          <div className="space-y-4">
+            <label className="block text-sm font-medium">시설 설명</label>
+            <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="시설에 대한 설명을 입력하세요" />
 
-          <div className="checkbox-group">
-            {["1인실", "2인실", "3인실", "4인실", "다인실"].map((room) => (
-              <div key={room} className="checkbox-item">
-                <Checkbox
-                  id={`room-${room}`}
-                  checked={formData.roomTypes.includes(room)}
-                  onChange={(e) => handleCheckboxChange(e, "roomTypes")}
-                  value={room}
-                />
-                <Label htmlFor={`room-${room}`}>{room}</Label>
-              </div>
-            ))}
-          </div>
-        </div>
+            <label className="block text-sm font-medium">이미지 URL (쉼표 구분)</label>
+            <Textarea name="imageUrls" value={formData.imageUrls} onChange={handleChange} rows={3} placeholder="/image1.png, /image2.png, ..." />
 
-        <div className="form-section">
-          <h2 className="section-title">편의 시설</h2>
-
-          <div className="checkbox-group">
-            {["식당", "카페", "정원", "물리치료실", "작업치료실", "도서관", "헬스장", "사우나", "미용실", "매점"].map(
-              (amenity) => (
-                <div key={amenity} className="checkbox-item">
-                  <Checkbox
-                    id={`amenity-${amenity}`}
-                    checked={formData.amenities.includes(amenity)}
-                    onChange={(e) => handleCheckboxChange(e, "amenities")}
-                    value={amenity}
+            <label className="block text-sm font-medium mt-4">제공 서비스</label>
+            <div className="grid grid-cols-2 gap-2">
+              {servicesOptions.map((item) => (
+                <label key={item} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.services.includes(item)}
+                    onChange={() => handleFeatureToggle(item, "services")}
                   />
-                  <Label htmlFor={`amenity-${amenity}`}>{amenity}</Label>
-                </div>
-              ),
-            )}
-          </div>
-        </div>
+                  <span className="text-sm">{item}</span>
+                </label>
+              ))}
+            </div>
 
-        <div className="form-section">
-          <h2 className="section-title">프로그램</h2>
-
-          <div className="checkbox-group">
-            {["음악치료", "미술치료", "원예치료", "운동치료", "인지치료", "작업치료", "레크리에이션", "종교활동"].map(
-              (program) => (
-                <div key={program} className="checkbox-item">
-                  <Checkbox
-                    id={`program-${program}`}
-                    checked={formData.programs.includes(program)}
-                    onChange={(e) => handleCheckboxChange(e, "programs")}
-                    value={program}
+            <label className="block text-sm font-medium mt-4">편의 시설</label>
+            <div className="grid grid-cols-2 gap-2">
+              {facilitiesOptions.map((item) => (
+                <label key={item} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.facilities.includes(item)}
+                    onChange={() => handleFeatureToggle(item, "facilities")}
                   />
-                  <Label htmlFor={`program-${program}`}>{program}</Label>
-                </div>
-              ),
-            )}
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h2 className="section-title">시설 이미지</h2>
-
-          <div className="form-group">
-            <Label htmlFor="images">이미지 업로드</Label>
-            <Input id="images" name="images" type="file" accept="image/*" multiple onChange={handleImageChange} />
-            <p className="image-help-text">이미지는 최대 10개까지 업로드 가능합니다.</p>
-
-            <div className="image-preview-container">
-              {previewImages.map((src, index) => (
-                <div key={index} className="image-preview-item">
-                  <img src={src || "/placeholder.svg"} alt={`시설 이미지 ${index + 1}`} />
-                  <button type="button" className="remove-image-btn" onClick={() => removeImage(index)}>
-                    ✕
-                  </button>
-                </div>
+                  <span className="text-sm">{item}</span>
+                </label>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="form-actions">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "저장 중..." : "저장하기"}
-          </Button>
-          <Button type="button" variant="outline" onClick={() => navigate("/admin/facilities")}>
+        <div className="flex justify-end gap-2 mt-8">
+          <Button type="button" onClick={() => navigate("/admin/facilities")} className="facility-button cancel">
             취소
           </Button>
-          <Button type="button" variant="destructive" onClick={handleDelete}>
-            시설 삭제
+          <Button type="submit" className="facility-button submit">
+            저장하기
           </Button>
         </div>
       </form>

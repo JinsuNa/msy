@@ -369,8 +369,6 @@ const AdminDashboardPage = () => {
   return (
     <Layout>
       <div className="admin-dashboard">
-        <h1 className="admin-dashboard-title">관리자 대시보드</h1>
-
         {/* 통계 카드 */}
         <div className="admin-dashboard-stats">
           <div className="admin-stat-card">

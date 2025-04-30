@@ -110,26 +110,27 @@ function ProductsPage() {
 
 
         {/* 필터 패널 */}
-        {showFilters && (
-          <div className="bg-gray-50 p-4 rounded-md mb-6">
-            <h3 className="font-medium text-sm mb-2">카테고리</h3>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setFilters((prev) => ({ ...prev, category: c.id }))}
-                  className={`text-xs px-3 py-1 rounded-full ${
-                    filters.category === c.id
-                      ? "bg-blue-500 text-white"
-                      : "bg-white border"
-                  }`}
-                >
-                  {c.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+{showFilters && (
+  <div className="bg-white p-4 rounded-md mb-6">
+    <h3 className="font-medium text-sm mb-2">카테고리</h3>
+    <div className="flex flex-wrap gap-2">
+      {categories.map((c) => (
+        <button
+          key={c.id}
+          onClick={() => setFilters((prev) => ({ ...prev, category: c.id }))}
+          className={`text-xs px-3 py-1 rounded-full shadow-sm ${
+            filters.category === c.id
+              ? "bg-blue-500 text-white" // ✅ 선택된 버튼은 더 진한 그림자
+              : "bg-white border shadow-lg"        // ✅ 기본 버튼도 가벼운 그림자
+          }`}
+        >
+          {c.name}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
 
         {/* 제품 그리드 */}
         {loading ? (

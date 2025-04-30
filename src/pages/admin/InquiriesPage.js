@@ -7,6 +7,9 @@ import { Button } from "../../components/ui/Button"
 import Skeleton from "../../components/ui/Skeleton"
 import Badge from "../../components/ui/Badge" // 수정: 기본 내보내기로 가져오기
 import "./AdminInquiriesPage.css" // 수정: 경로 변경
+import {FaSearch} from "react-icons/fa"
+import { Eye, MessageSquare, Trash2 } from "lucide-react"
+
 
 /**
  * 문의 답변 페이지
@@ -96,6 +99,13 @@ const InquiriesPage = () => {
     navigate(`/admin/questions/${inquiryId}`)
   }
 
+  const handleDeleteInquiry = (id) => {
+    if (window.confirm("정말로 이 문의를 삭제하시겠습니까?")) {
+      setInquiries((prev) => prev.filter((inquiry) => inquiry.id !== id))
+    }
+  }
+  
+
   // 검색어 변경 핸들러
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value)
@@ -134,14 +144,26 @@ const InquiriesPage = () => {
   // 상태에 따른 배지 색상 및 텍스트
   const getStatusBadge = (status) => {
     switch (status) {
-      case "pending":
-        return <Badge variant="warning">대기중</Badge>
       case "answered":
-        return <Badge variant="success">답변완료</Badge>
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+            답변완료
+          </span>
+        )
+      case "pending":
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+            미답변
+          </span>
+        )
       default:
-        return <Badge>알 수 없음</Badge>
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+            알 수 없음
+          </span>
+        )
     }
-  }
+  }  
 
   // 날짜 포맷팅
   const formatDate = (date) => {
@@ -158,9 +180,9 @@ const InquiriesPage = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="admin-inquiries">
+        <div className="admin-inquiries max-w-6xl mx-auto px-4">
           <div className="admin-header">
-            <h1>문의 답변</h1>
+            <h1>질문/답변 관리</h1>
           </div>
 
           <div className="admin-filters">
@@ -182,27 +204,30 @@ const InquiriesPage = () => {
 
   return (
     <Layout>
-      <div className="admin-inquiries">
+      <div className="admin-inquiries max-w-6xl mx-auto px-4">
         <div className="admin-header">
-          <h1>문의 답변</h1>
+          <h1>질문/답변 관리</h1>
         </div>
 
-        <div className="admin-filters">
-          <div className="admin-search">
+        <div className="admin-filters flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <div className="admin-search flex items-center border border-gray-300 rounded-md px-4 py-2 bg-white">
+          <FaSearch className="text-gray-400 mr-2 w-4 h-4" />
             <input
               type="text"
-              placeholder="제목, 내용 또는 이름으로 검색"
+              placeholder="질문 검색"
               value={searchTerm}
               onChange={handleSearchChange}
-              className="admin-search-input"
+              className="outline-none text-sm placeholder-gray-400 bg-transparent"
             />
           </div>
-
-          <select value={filterStatus} onChange={handleStatusFilterChange} className="admin-filter-select">
+          <div className="admin-filter-group flex gap-4 mt-2 sm:mt-0">
+          <select value={filterStatus} onChange={handleStatusFilterChange} 
+          className="border border-gray-300 rounded-md px-4 py-2 text-sm bg-white text-gray-800 focus:outline-none">
             <option value="all">모든 상태</option>
             <option value="pending">대기중</option>
             <option value="answered">답변완료</option>
           </select>
+          </div>
         </div>
 
         {filteredInquiries.length === 0 ? (
@@ -223,23 +248,50 @@ const InquiriesPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentInquiries.map((inquiry) => (
-                    <tr key={inquiry.id}>
-                      <td className="inquiry-title">{inquiry.title}</td>
-                      <td>{inquiry.userName}</td>
-                      <td>{getStatusBadge(inquiry.status)}</td>
-                      <td>{formatDate(inquiry.createdAt)}</td>
-                      <td className="admin-actions">
-                        <Button
-                          variant={inquiry.status === "pending" ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleViewDetail(inquiry.id)}
-                        >
-                          {inquiry.status === "pending" ? "답변하기" : "상세보기"}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                {currentInquiries.map((inquiry) => (
+  <tr key={inquiry.id} className="h-16">
+    <td className="inquiry-title">{inquiry.title}</td>
+    <td>{inquiry.userName}</td>
+    <td>{getStatusBadge(inquiry.status)}</td>
+    <td>{formatDate(inquiry.createdAt)}</td>
+    <td className="px-6 py-4">
+  <div className="flex justify-start items-center gap-5">
+    {/* 상세 보기 (항상 표시) */}
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => handleViewDetail(inquiry.id)}
+    >
+      <Eye className="w-5 h-5 text-blue-500" />
+    </Button>
+
+    {/* 답변하기 (답변 전일 때만 표시) */}
+    {inquiry.status === "pending" && (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => handleViewDetail(inquiry.id)}
+      >
+        <MessageSquare className="w-5 h-5 text-green-600" />
+      </Button>
+    )}
+
+    {/* 삭제 */}
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => handleDeleteInquiry(inquiry.id)}
+    >
+      <Trash2 className="w-5 h-5 text-red-500" />
+    </Button>
+  </div>
+</td>
+
+
+
+  </tr>
+))}
+
                 </tbody>
               </table>
             </div>

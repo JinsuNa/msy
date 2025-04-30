@@ -46,8 +46,9 @@ function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken")
-    setIsLoggedIn(!!token)
+    // 초기 진입 시 무조건 로그아웃 상태로 설정 (개발용)
+    localStorage.removeItem("accessToken")
+    setIsLoggedIn(false)
   }, [])
 
   const handleLogout = () => {
@@ -103,14 +104,14 @@ function HomePage() {
 
         <div className="search-section">
           <div className="search-box">
-            <div className="search-icon">
-              <Search className="icon-small" />
-            </div>
             <input
               type="text"
               placeholder="시설명, 지역명으로 검색하세요"
               className="search-input"
             />
+            <div className="search-icon">
+              <Search className="icon-small" />
+            </div>
           </div>
         </div>
 

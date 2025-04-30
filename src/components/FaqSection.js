@@ -215,9 +215,6 @@ function FaqSection() {
       <div className="bg-white rounded-xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-medium">자주 궁금해하는 질문</h2>
-          <Link to="/faq" className="text-xs text-gray-500 flex items-center">
-            더보기 <ChevronRight className="h-3 w-3" />
-          </Link>
         </div>
 
         <div className="space-y-2">

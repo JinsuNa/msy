@@ -1,11 +1,13 @@
 "use client"
-
+import Layout from "../../components/Layout";
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "../../components/ui/Button"
 import Skeleton from "../../components/ui/Skeleton"
 import Badge from "../../components/ui/Badge"
 import "../../styles/AdminProductsListPage.css"
+import {FaSearch} from "react-icons/fa"
+import {Eye, Pencil, Trash2} from "lucide-react";
 
 /**
  * 상품 목록 페이지
@@ -225,9 +227,10 @@ const ProductsListPage = () => {
   // 로딩 중 스켈레톤 UI 표시
   if (isLoading) {
     return (
-      <div className="admin-products-list">
+      <Layout>
+      <div className="admin-products-list max-w-6xl mx-auto px-4">
         <div className="admin-header">
-          <h1>상품 목록</h1>
+          <h1>상품 관리</h1>
           <Skeleton className="admin-button-skeleton" />
         </div>
 
@@ -247,102 +250,125 @@ const ProductsListPage = () => {
           <Skeleton className="admin-pagination-skeleton" />
         </div>
       </div>
+      </Layout>
     )
   }
 
   return (
-    <div className="admin-products-list">
+    <Layout>
+    <div className="admin-products-list max-w-6xl mx-auto px-4">
       <div className="admin-header">
-        <h1>상품 목록</h1>
-        <Button onClick={handleAddNewProduct}>새 상품 등록</Button>
+        <h1>상품 관리</h1>
+        <Button variant="primary" onClick={handleAddNewProduct}>
+          새 상품 등록
+          </Button>
       </div>
 
-      <div className="admin-filters">
-        <div className="admin-search">
-          <input
-            type="text"
-            placeholder="상품명으로 검색"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="admin-search-input"
-          />
-        </div>
+       {/* ✅ 여기에 탭 추가 */}
+  <div className="mt-4 mb-6">
+    <div className="bg-gray-50 rounded-md flex">
+      <button
+      
+        className="flex-1 py-2 px-4 text-sm font-medium text-center rounded-md bg-white shadow-sm text-gray-900"
+        disabled
+      >
+        상품 목록
+      </button>
+      <button
+        onClick={() => navigate("/admin/sales")}
+        className="flex-1 py-2 px-4 text-sm font-medium text-center text-gray-800 hover:bg-gray-100 transition-colors"
+      >
+        구매 현황
+      </button>
+    </div>
+  </div>
 
-        <div className="admin-filter-group">
-          <select value={filterCategory} onChange={handleCategoryFilterChange} className="admin-filter-select">
-            <option value="all">모든 카테고리</option>
-            <option value="이동 보조">이동 보조</option>
-            <option value="욕실 용품">욕실 용품</option>
-            <option value="침실 용품">침실 용품</option>
-            <option value="일상 생활용품">일상 생활용품</option>
-            <option value="의료 용품">의료 용품</option>
-          </select>
+      <div className="admin-filters flex flex-col sm:flex-row sm:items-center sm:gap-4">
+  {/* 검색창 */}
+  <div className="admin-search flex items-center border border-gray-300 rounded-md px-4 py-2 bg-white">
+    <FaSearch className="text-gray-400 mr-2 w-4 h-4" />
+    <input
+      type="text"
+      placeholder="상품명 검색"
+      value={searchTerm}
+      onChange={handleSearchChange}
+      className="outline-none text-sm placeholder-gray-400 bg-transparent"
+    />
+  </div>
 
-          <select value={filterStock} onChange={handleStockFilterChange} className="admin-filter-select">
-            <option value="all">모든 재고 상태</option>
-            <option value="inStock">재고 있음</option>
-            <option value="outOfStock">품절</option>
-          </select>
-        </div>
-      </div>
+  {/* 필터 그룹 */}
+  <div className="admin-filter-group flex gap-4 mt-2 sm:mt-0">
+    <select
+      value={filterCategory}
+      onChange={handleCategoryFilterChange}
+      className="border border-gray-300 rounded-md px-4 py-2 text-sm bg-white text-gray-800 focus:outline-none"
+    >
+      <option value="all">모든 카테고리</option>
+      <option value="이동 보조">이동 보조</option>
+      <option value="욕실 용품">욕실 용품</option>
+      <option value="침실 용품">침실 용품</option>
+      <option value="일상 생활용품">일상 생활용품</option>
+      <option value="의료 용품">의료 용품</option>
+    </select>
 
+    <select
+      value={filterStock}
+      onChange={handleStockFilterChange}
+      className="border border-gray-300 rounded-md px-4 py-2 text-sm bg-white text-gray-800 focus:outline-none"
+    >
+      <option value="all">모든 재고 상태</option>
+      <option value="inStock">재고 있음</option>
+      <option value="outOfStock">품절</option>
+    </select>
+  </div>
+</div>
       {filteredProducts.length === 0 ? (
         <div className="admin-empty-state">
           <p>검색 조건에 맞는 상품이 없습니다.</p>
         </div>
       ) : (
         <>
-          <div className="admin-table-container">
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>상품명</th>
-                  <th>카테고리</th>
-                  <th>가격</th>
-                  <th>할인율</th>
-                  <th>판매가</th>
-                  <th>재고</th>
-                  <th>판매량</th>
-                  <th>등록일</th>
-                  <th>관리</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentProducts.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.name}</td>
-                    <td>{product.category}</td>
-                    <td>{formatPrice(product.price)}</td>
-                    <td>{product.discountRate > 0 ? `${product.discountRate}%` : "-"}</td>
-                    <td>
-                      {product.discountRate > 0
-                        ? formatPrice(calculateDiscountedPrice(product.price, product.discountRate))
-                        : formatPrice(product.price)}
-                    </td>
-                    <td>
-                      <div className="stock-info">
-                        {getStockBadge(product.stock)}
-                        <span>{product.stock}개</span>
-                      </div>
-                    </td>
-                    <td>{product.salesCount}개</td>
-                    <td>{formatDate(product.createdAt)}</td>
-                    <td className="admin-actions">
-                      <Button variant="outline" size="sm" onClick={() => handleViewDetail(product.id)}>
-                        상세
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(product.id)}>
-                        수정
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDelete(product.id)}>
-                        삭제
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="admin-table-container">
+  <table className="admin-table">
+    <thead>
+      <tr>
+        <th className="px-6 py-4">상품명</th>
+        <th className="px-6 py-4">카테고리</th>
+        <th className="px-6 py-4">가격</th>
+        <th className="px-6 py-4">재고</th>
+        <th className="px-6 py-4">관리</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentProducts.map((product) => (
+        <tr key={product.id} className="h-16">
+          <td>{product.name}</td>
+          <td>{product.category}</td>
+          <td>{formatPrice(product.price)}</td>
+          <td className="px-6 py-4">
+            <div className="text-sm text-gray-800">{product.stock}개</div>
+          </td>
+          <td className="px-6 py-4">
+            <div className="flex justify-start items-center gap-5">
+              <Button variant="ghost" size="icon" onClick={() => handleViewDetail(product.id)}>
+                <Eye className="w-5 h-5 text-blue-500" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => handleEdit(product.id)}>
+                <Pencil className="w-5 h-5 text-orange-500" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)}>
+                <Trash2 className="w-5 h-5 text-red-500" />
+              </Button>
+            </div>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+
+
 
           {totalFilteredPages > 1 && (
             <div className="admin-pagination">
@@ -379,6 +405,7 @@ const ProductsListPage = () => {
         </>
       )}
     </div>
+    </Layout>
   )
 }
 

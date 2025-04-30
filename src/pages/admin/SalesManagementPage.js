@@ -1,10 +1,13 @@
 "use client"
-
+import Layout from "../../components/Layout";
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { Button } from "../../components/ui/Button"
 import { Link } from "react-router-dom"
 import "../../../src/styles/AdminSalesManagementPage.css"
 
 const SalesManagementPage = () => {
+    const navigate = useNavigate()
   // 주문 상태 옵션
   const orderStatusOptions = [
     { value: "all", label: "전체" },
@@ -402,8 +405,39 @@ const SalesManagementPage = () => {
     return amount.toLocaleString("ko-KR") + "원"
   }
 
+  const handleAddNewProduct = () => {
+    navigate("/admin/products/new")
+  }
+
   return (
-    <div className="admin-sales-management">
+    <Layout>
+    <div className="admin-sales-management max-w-6xl mx-auto px-4">
+
+    <div className="admin-header ">
+        <h1>상품 관리</h1>
+        <Button variant="primary" onClick={handleAddNewProduct}>
+          새 상품 등록
+          </Button>
+      </div>
+
+      {/* ✅ 탭 네비게이션 추가 */}
+<div className="mt-4 mb-6">
+  <div className="bg-gray-50 rounded-md flex">
+    <Link
+      to="/admin/products"
+      className="flex-1 py-2 px-4 text-sm font-medium text-center text-gray-800 hover:bg-gray-100 transition-colors rounded-md"
+    >
+      상품 목록
+    </Link>
+    <button
+      className="flex-1 py-2 px-4 text-sm font-medium text-center rounded-md bg-white shadow-sm text-gray-900"
+      disabled
+    >
+      구매 현황
+    </button>
+  </div>
+</div>
+
       <h1>판매 현황 관리</h1>
 
       {/* 판매 요약 정보 */}
@@ -509,120 +543,99 @@ const SalesManagementPage = () => {
       </div>
 
       {/* 주문 목록 테이블 */}
-      <div className="orders-table-container">
-        <table className="orders-table">
-          <thead>
-            <tr>
-              <th>주문번호</th>
-              <th>주문일시</th>
-              <th>주문자</th>
-              <th>상품정보</th>
-              <th>결제방법</th>
-              <th>상태</th>
-              <th>관리</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.length > 0 ? (
-              currentItems.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.orderNumber}</td>
-                  <td>{formatDate(order.orderDate)}</td>
-                  <td>
-                    <div className="user-info">
-                      <div>{order.user.name}</div>
-                      <div>{order.user.phone}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="product-info">
-                      {order.products.map((product, index) => (
-                        <div key={index} className="product-item">
-                          {product.image && (
-                            <img
-                              src={product.image || "/placeholder.svg"}
-                              alt={product.name}
-                              className="product-thumbnail"
-                            />
-                          )}
-                          <div className="product-details">
-                            <div>{product.name}</div>
-                            <div>
-                              {formatCurrency(product.price)} x {product.quantity}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      <div className="total-amount">총 {formatCurrency(order.totalAmount)}</div>
-                    </div>
-                  </td>
-                  <td>{getPaymentMethodInKorean(order.paymentMethod)}</td>
-                  <td>
-                    <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>
-                      {getStatusInKorean(order.status)}
-                    </span>
-                    {order.status === "shipping" && order.shippingInfo.trackingNumber && (
-                      <div className="tracking-info">
-                        <div>운송장: {order.shippingInfo.trackingNumber}</div>
-                        <div>택배사: {order.shippingInfo.carrier}</div>
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    <div className="action-buttons">
-                      <Link to={`/admin/sales/order/${order.id}`} className="view-button">
-                        상세보기
-                      </Link>
-                      {order.status === "pending" && (
-                        <button className="process-button" onClick={() => handleStatusChange(order.id, "processing")}>
-                          상품준비
-                        </button>
-                      )}
-                      {order.status === "processing" && (
-                        <button
-                          className="ship-button"
-                          onClick={() => {
-                            const trackingNumber = prompt("운송장 번호를 입력하세요:")
-                            const carrier = prompt("택배사를 입력하세요:", "우체국택배")
-                            if (trackingNumber) {
-                              handleShippingUpdate(order.id, trackingNumber, carrier || "우체국택배")
-                            }
-                          }}
-                        >
-                          배송시작
-                        </button>
-                      )}
-                      {order.status === "shipping" && (
-                        <button className="complete-button" onClick={() => handleStatusChange(order.id, "delivered")}>
-                          배송완료
-                        </button>
-                      )}
-                      {(order.status === "pending" || order.status === "processing") && (
-                        <button
-                          className="cancel-button"
-                          onClick={() => {
-                            if (window.confirm("이 주문을 취소하시겠습니까?")) {
-                              handleStatusChange(order.id, "cancelled")
-                            }
-                          }}
-                        >
-                          취소
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="no-orders">
-                  주문 내역이 없습니다.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <div className="admin-table-container">
+  <table className="admin-table">
+    <thead>
+      <tr>
+        <th className="px-6 py-4">주문번호</th>
+        <th className="px-6 py-4">주문자</th>
+        <th className="px-6 py-4">상품명</th>
+        <th className="px-6 py-4">수량</th>
+        <th className="px-6 py-4">금액</th>
+        <th className="px-6 py-4">주문일자</th>
+        <th className="px-6 py-4">상태</th>
+        <th className="px-6 py-4">관리</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentItems.length > 0 ? (
+        currentItems.map((order) => (
+          <tr key={order.id} className="h-16">
+            <td className="px-6 py-4">{order.orderNumber}</td>
+            <td className="px-6 py-4 font-medium text-gray-900">{order.user.name}</td>
+            <td className="px-6 py-4">
+              {order.products.map((product, index) => (
+                <div key={index}>{product.name}</div>
+              ))}
+            </td>
+            <td className="px-6 py-4">
+              {order.products.reduce((sum, p) => sum + p.quantity, 0)}
+            </td>
+            <td className="px-6 py-4">{formatCurrency(order.totalAmount)}</td>
+            <td className="px-6 py-4">{formatDate(order.orderDate)}</td>
+            <td className="px-6 py-4">
+              <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>
+                {getStatusInKorean(order.status)}
+              </span>
+            </td>
+            <td className="px-6 py-4">
+  <div className="action-buttons flex gap-2">
+    <Link to={`/admin/sales/order/${order.id}`} className="view-button">
+      상세보기
+    </Link>
+    {order.status === "pending" && (
+      <button className="process-button" onClick={() => handleStatusChange(order.id, "processing")}>
+        상품준비
+      </button>
+    )}
+    {order.status === "processing" && (
+      <button
+        className="ship-button"
+        onClick={() => {
+          const trackingNumber = prompt("운송장 번호를 입력하세요:")
+          const carrier = prompt("택배사를 입력하세요:", "우체국택배")
+          if (trackingNumber) {
+            handleShippingUpdate(order.id, trackingNumber, carrier || "우체국택배")
+          }
+        }}
+      >
+        배송시작
+      </button>
+    )}
+    {order.status === "shipping" && (
+      <button className="complete-button" onClick={() => handleStatusChange(order.id, "delivered")}>
+        배송완료
+      </button>
+    )}
+    {(order.status === "pending" || order.status === "processing") && (
+      <button
+        className="cancel-button"
+        onClick={() => {
+          if (window.confirm("이 주문을 취소하시겠습니까?")) {
+            handleStatusChange(order.id, "cancelled")
+          }
+        }}
+      >
+        취소
+      </button>
+    )}
+  </div>
+</td>
+
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="8" className="px-6 py-6 text-center text-gray-500">
+            주문 내역이 없습니다.
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
 
       {/* 페이지네이션 */}
       {filteredOrders.length > 0 && (
@@ -678,6 +691,7 @@ const SalesManagementPage = () => {
         </div>
       )}
     </div>
+    </Layout>
   )
 }
 

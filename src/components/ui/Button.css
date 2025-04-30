@@ -22,6 +22,18 @@
   pointer-events: none;
 }
 
+.btn-primary {  /* ✅ 새로 추가 */
+  background-color: #2563eb; /* 파란색 */
+  color: white;
+  padding: 0.5rem 1.5rem; /* ✅ 패딩 직접 적용 (세로 0.5, 가로 1.5로 넉넉하게) */
+  font-size: 0.875rem; /* ✅ 기본 글자 크기 유지 */
+  border-radius: 0.5rem; /* ✅ (선택) 버튼 모서리 둥글게, 더 고급스럽게 */
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8; /* 진한 파란색 */
+}
+
 /* Variant styles */
 .button-default {
   background-color: var(--primary-color);

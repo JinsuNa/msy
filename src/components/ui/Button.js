@@ -16,6 +16,8 @@ import "./Button.css"
 const Button = React.forwardRef(({ className, variant = "default", size = "default", children, ...props }, ref) => {
   const getVariantClasses = () => {
     switch (variant) {
+      case "primary":       // ✅ primary 추가!!
+        return "btn-primary"
       case "outline":
         return "btn-outline"
       case "secondary":

@@ -40,6 +40,7 @@ import "./App.css";
 import { AuthProvider } from "./hooks/use-auth";
 import { CartProvider } from "./hooks/use-cart";
 import { FavoritesProvider } from "./hooks/use-favorites";
+import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler"
 
 /** 메인 레이아웃: Outlet + BottomNavigation + ChatbotButton */
 function MainLayout() {
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/products/:id" element={<ProductDetailPage />} />
                 <Route path="/products/:id/question" element={<ProductDetailPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/login/oauth2/code/:provider" element={<OAuth2RedirectHandler />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/facility/:id" element={<FacilityDetailPage />} />

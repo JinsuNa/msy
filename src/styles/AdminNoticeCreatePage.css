@@ -68,6 +68,48 @@
   gap: 0.75rem;
   margin-top: 2rem;
 }
+/* AdminNoticeCreatePage.css */
+
+/* 공통 버튼 스타일 */
+.notice-button {
+  height: 42px;
+  width: 120px;
+  padding: 0 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -30px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+/* 취소 버튼 */
+.notice-cancel-button {
+  background-color: #ffffff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.notice-cancel-button:hover {
+  background-color: #f9fafb;
+  border-color: #cbd5e1;
+}
+
+/* 공지사항 등록 버튼 */
+.notice-submit-button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.notice-submit-button:hover {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}
+
 
 @media (max-width: 640px) {
   .admin-header {

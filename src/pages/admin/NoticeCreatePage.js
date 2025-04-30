@@ -7,12 +7,10 @@ import { Button } from "../../components/ui/Button"
 import { Input } from "../../components/ui/Input"
 import { Textarea } from "../../components/ui/Textarea"
 import { Label } from "../../components/ui/Label"
-import "./AdminNoticeCreatePage.css" // 수정: 경로 변경
+import "../../styles/AdminNoticeCreatePage.css"
 
-/**
- * 공지사항 작성 페이지
- * 관리자가 새로운 공지사항을 작성할 수 있는 페이지입니다.
- */
+
+
 const NoticeCreatePage = () => {
   const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,7 +22,6 @@ const NoticeCreatePage = () => {
   })
   const [errors, setErrors] = useState({})
 
-  // 입력 필드 변경 핸들러
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData({
@@ -32,7 +29,6 @@ const NoticeCreatePage = () => {
       [name]: type === "checkbox" ? checked : value,
     })
 
-    // 에러 상태 초기화
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -41,25 +37,15 @@ const NoticeCreatePage = () => {
     }
   }
 
-  // 폼 유효성 검사
   const validateForm = () => {
     const newErrors = {}
-
-    if (!formData.title.trim()) {
-      newErrors.title = "제목을 입력해주세요"
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = "내용을 입력해주세요"
-    }
-
+    if (!formData.title.trim()) newErrors.title = "제목을 입력해주세요"
+    if (!formData.content.trim()) newErrors.content = "내용을 입력해주세요"
     return newErrors
   }
 
-  // 폼 제출 핸들러
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     const validationErrors = validateForm()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
@@ -69,10 +55,7 @@ const NoticeCreatePage = () => {
     setIsSubmitting(true)
 
     try {
-      // TODO: 백엔드 API 연동 - 공지사항 등록 요청
       console.log("공지사항 등록 요청:", formData)
-
-      // 성공 시 공지사항 목록 페이지로 이동
       alert("공지사항이 성공적으로 등록되었습니다.")
       navigate("/admin/notices")
     } catch (error) {
@@ -83,7 +66,6 @@ const NoticeCreatePage = () => {
     }
   }
 
-  // 취소 버튼 핸들러
   const handleCancel = () => {
     if (window.confirm("작성 중인 내용이 저장되지 않습니다. 취소하시겠습니까?")) {
       navigate("/admin/notices")
@@ -153,12 +135,20 @@ const NoticeCreatePage = () => {
           </div>
 
           <div className="form-actions">
-            <Button type="button" variant="outline" onClick={handleCancel}>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="notice-button notice-cancel-button"
+            >
               취소
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="notice-button notice-submit-button"
+            >
               {isSubmitting ? "등록 중..." : "공지사항 등록"}
-            </Button>
+            </button>
           </div>
         </form>
       </div>

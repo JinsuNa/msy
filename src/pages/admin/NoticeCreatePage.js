@@ -77,9 +77,9 @@ const NoticeCreatePage = () => {
       <div className="admin-notice-create">
         <div className="admin-header">
           <h1>공지사항 작성</h1>
-          <Button onClick={() => navigate("/admin/notices")} variant="outline">
-            목록으로 돌아가기
-          </Button>
+          <Button onClick={() => navigate("/notices")} variant="outline">
+              목록으로 돌아가기
+            </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="notice-form">

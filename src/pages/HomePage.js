@@ -9,7 +9,6 @@ import {
 } from "lucide-react"
 
 import { Button } from "../components/ui/Button"
-import { Input } from "../components/ui/Input"
 import FacilityTypeGrid from "../components/FacilityTypeGrid"
 import FaqSection from "../components/FaqSection"
 import PromotionSection from "../components/PromotionSection"
@@ -46,9 +45,8 @@ function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    // 초기 진입 시 무조건 로그아웃 상태로 설정 (개발용)
-    localStorage.removeItem("accessToken")
-    setIsLoggedIn(false)
+    const token = localStorage.getItem("accessToken")
+    setIsLoggedIn(!!token)
   }, [])
 
   const handleLogout = () => {

@@ -1,6 +1,9 @@
 .admin-notice-create {
-  padding: 1.5rem;
+  max-width: 1024px;         /* 최대 너비 제한 */
+  margin: 0 auto;           /* 중앙 정렬 */
+  padding: 1.5rem 1rem;     /* 좌우 여백 확보 */
 }
+
 
 .admin-header {
   display: flex;

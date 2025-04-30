@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "../../components/ui/Button"
 import { Link } from "react-router-dom"
 import "../../../src/styles/AdminSalesManagementPage.css"
+import { FaSearch } from "react-icons/fa";
 
 const SalesManagementPage = () => {
     const navigate = useNavigate()
@@ -61,6 +62,11 @@ const SalesManagementPage = () => {
     cancelledOrders: 0,
     refundedOrders: 0,
   })
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+  
 
   // 더미 데이터 생성
   useEffect(() => {
@@ -333,26 +339,53 @@ const SalesManagementPage = () => {
     )
   }
 
-  // 주문 상태에 따른 배지 색상
-  const getStatusBadgeClass = (status) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case "pending":
-        return "badge-blue"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+            결제완료
+          </span>
+        );
       case "processing":
-        return "badge-purple"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
+            상품준비중
+          </span>
+        );
       case "shipping":
-        return "badge-orange"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
+            배송중
+          </span>
+        );
       case "delivered":
-        return "badge-green"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+            배송완료
+          </span>
+        );
       case "cancelled":
-        return "badge-red"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+            취소
+          </span>
+        );
       case "refunded":
-        return "badge-gray"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+            환불
+          </span>
+        );
       default:
-        return "badge-default"
+        return (
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+            알 수 없음
+          </span>
+        );
     }
-  }
-
+  };
+  
   // 주문 상태 한글 변환
   const getStatusInKorean = (status) => {
     switch (status) {
@@ -409,6 +442,8 @@ const SalesManagementPage = () => {
     navigate("/admin/products/new")
   }
 
+  
+
   return (
     <Layout>
     <div className="admin-sales-management max-w-6xl mx-auto px-4">
@@ -451,10 +486,6 @@ const SalesManagementPage = () => {
           <p className="summary-value">{salesSummary.totalOrders}건</p>
         </div>
         <div className="summary-card">
-          <h3>평균 주문 금액</h3>
-          <p className="summary-value">{formatCurrency(salesSummary.averageOrderValue)}</p>
-        </div>
-        <div className="summary-card">
           <h3>배송 대기</h3>
           <p className="summary-value">{salesSummary.pendingShipments}건</p>
         </div>
@@ -469,78 +500,35 @@ const SalesManagementPage = () => {
       </div>
 
       {/* 필터링 옵션 */}
-      <div className="filter-section">
-        <div className="filter-row">
-          <div className="filter-group">
-            <label>주문 상태</label>
-            <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-              {orderStatusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4 mb-6">
+  {/* 검색창 */}
+  <div className="relative w-full">
+    <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+    <input
+      type="text"
+      placeholder="상품명 검색"
+      value={searchTerm}
+      onChange={handleSearchChange}
+      className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 bg-white outline-none"
+    />
+  </div>
 
-          <div className="filter-group">
-            <label>결제 방법</label>
-            <select value={selectedPayment} onChange={(e) => setSelectedPayment(e.target.value)}>
-              {paymentMethodOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+  {/* 검색 조건 필터 */}
+  <div className="w-full sm:w-1/3">
+    <select
+      value={searchType}
+      onChange={(e) => setSearchType(e.target.value)}
+      className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-800 focus:outline-none"
+    >
+      <option value="all">전체</option>
+      <option value="orderNumber">주문번호</option>
+      <option value="userName">주문자명</option>
+      <option value="userPhone">연락처</option>
+      <option value="productName">상품명</option>
+    </select>
+  </div>
+</div>
 
-          <div className="filter-group">
-            <label>기간</label>
-            <select value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)}>
-              {periodOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {selectedPeriod === "custom" && (
-            <div className="date-range">
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-              <span>~</span>
-              <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-            </div>
-          )}
-        </div>
-
-        <div className="filter-row">
-          <div className="search-group">
-            <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-              <option value="orderNumber">주문번호</option>
-              <option value="userName">주문자명</option>
-              <option value="userPhone">연락처</option>
-              <option value="productName">상품명</option>
-            </select>
-            <input
-              type="text"
-              placeholder="검색어를 입력하세요"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button className="search-button">검색</button>
-          </div>
-
-          <div className="items-per-page">
-            <label>표시 개수</label>
-            <select value={itemsPerPage} onChange={(e) => setItemsPerPage(Number(e.target.value))}>
-              <option value={10}>10개</option>
-              <option value={20}>20개</option>
-              <option value={50}>50개</option>
-              <option value={100}>100개</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
       {/* 주문 목록 테이블 */}
       <div className="admin-table-container">
@@ -574,45 +562,57 @@ const SalesManagementPage = () => {
             <td className="px-6 py-4">{formatCurrency(order.totalAmount)}</td>
             <td className="px-6 py-4">{formatDate(order.orderDate)}</td>
             <td className="px-6 py-4">
-              <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>
-                {getStatusInKorean(order.status)}
-              </span>
-            </td>
-            <td className="px-6 py-4">
-  <div className="action-buttons flex gap-2">
-    <Link to={`/admin/sales/order/${order.id}`} className="view-button">
+  {getStatusBadge(order.status)}
+</td>
+
+<td className="px-6 py-4">
+  <div className="action-buttons flex flex-col gap-2">
+    <Link
+      to={`/admin/sales/order/${order.id}`}
+      className="bg-gray-100 text-gray-800 text-xs font-medium rounded-md px-3 py-1 text-center"
+    >
       상세보기
     </Link>
+
     {order.status === "pending" && (
-      <button className="process-button" onClick={() => handleStatusChange(order.id, "processing")}>
+      <button
+        className="bg-blue-100 text-blue-700 text-xs font-medium rounded-md px-3 py-1"
+        onClick={() => handleStatusChange(order.id, "processing")}
+      >
         상품준비
       </button>
     )}
+
     {order.status === "processing" && (
       <button
-        className="ship-button"
+        className="bg-orange-100 text-orange-700 text-xs font-medium rounded-md px-3 py-1"
         onClick={() => {
-          const trackingNumber = prompt("운송장 번호를 입력하세요:")
-          const carrier = prompt("택배사를 입력하세요:", "우체국택배")
+          const trackingNumber = prompt("운송장 번호를 입력하세요:");
+          const carrier = prompt("택배사를 입력하세요:", "우체국택배");
           if (trackingNumber) {
-            handleShippingUpdate(order.id, trackingNumber, carrier || "우체국택배")
+            handleShippingUpdate(order.id, trackingNumber, carrier || "우체국택배");
           }
         }}
       >
         배송시작
       </button>
     )}
+
     {order.status === "shipping" && (
-      <button className="complete-button" onClick={() => handleStatusChange(order.id, "delivered")}>
+      <button
+        className="bg-green-100 text-green-700 text-xs font-medium rounded-md px-3 py-1"
+        onClick={() => handleStatusChange(order.id, "delivered")}
+      >
         배송완료
       </button>
     )}
+
     {(order.status === "pending" || order.status === "processing") && (
       <button
-        className="cancel-button"
+        className="bg-red-100 text-red-600 text-xs font-medium rounded-md px-3 py-1"
         onClick={() => {
           if (window.confirm("이 주문을 취소하시겠습니까?")) {
-            handleStatusChange(order.id, "cancelled")
+            handleStatusChange(order.id, "cancelled");
           }
         }}
       >
@@ -621,6 +621,9 @@ const SalesManagementPage = () => {
     )}
   </div>
 </td>
+
+
+
 
           </tr>
         ))

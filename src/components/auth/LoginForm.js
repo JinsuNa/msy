@@ -56,10 +56,10 @@ function LoginForm() {
         password: loginData.password,
       })
 
-      const { token, isAdmin } = response.data
+      const { token, admin } = response.data
       if (token) {
         localStorage.setItem("accessToken", token)
-        if (isAdmin) navigate("/admin/dashboard")
+        if (admin) navigate("/admin/dashboard")
         else navigate("/")
       } else {
         setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
@@ -75,7 +75,7 @@ function LoginForm() {
   // 소셜 로그인 리디렉션
   const handleSocialLogin = (provider) => {
     // 백엔드에 등록된 OAuth2 시작 엔드포인트로 이동
-    window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`
+    window.location.href = `https://localhost:8443/login/oauth2/authorization/${provider}`
   }
 
   return (

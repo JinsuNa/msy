@@ -75,7 +75,7 @@ function LoginForm() {
   // 소셜 로그인 리디렉션
   const handleSocialLogin = (provider) => {
     // 백엔드에 등록된 OAuth2 시작 엔드포인트로 이동
-    window.location.href = `https://localhost:8443/login/oauth2/authorization/${provider}`
+    window.location.href = `${API_BASE_URL.replace('/api','')}/oauth2/authorization/${provider}`
   }
 
   return (

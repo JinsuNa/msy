@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import Skeleton from "../../components/ui/Skeleton";
 import { Eye, Pencil, Trash2 } from "lucide-react";
-import "../../styles/AdminFacilitiesListPage.css";
 import { FaSearch } from "react-icons/fa";
+import "../../styles/AdminFacilitiesListPage.css";
 
-// 날짜 포맷 함수 예시 (임시로 넣음)
+// 날짜 포맷 함수
 const formatDate = (dateString) => {
   if (!dateString) return "-";
   const date = new Date(dateString);
@@ -25,56 +25,51 @@ const FacilitiesListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const fetchFacilities = async () => {
-      try {
-        setTimeout(() => {
-          const dummyFacilities = [
-            {
-              id: 1,
-              name: "행복요양원",
-              type: "요양원",
-              address: "서울시 강남구 테헤란로 123",
-              status: "approved",
-              phone: "02-123-4567",
-              rating: 4.2,
-              reviewCount: 10,
-              createdAt: "2023-05-01",
-            },
-            {
-              id: 2,
-              name: "미소요양병원",
-              type: "요양병원",
-              address: "서울시 서초구 서초대로 456",
-              status: "approved",
-              phone: "02-234-5678",
-              rating: 4.0,
-              reviewCount: 8,
-              createdAt: "2023-06-10",
-            },
-            {
-              id: 3,
-              name: "푸른실버타운",
-              type: "실버타운",
-              address: "경기도 고양시 일산동구 중앙로 789",
-              status: "approved",
-              phone: "031-345-6789",
-              rating: 3.8,
-              reviewCount: 12,
-              createdAt: "2023-07-15",
-            },
-          ];
-          setFacilities(dummyFacilities);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error("시설 목록 로드 중 오류 발생:", error);
-        setIsLoading(false);
-      }
-    };
-    fetchFacilities();
+    setTimeout(() => {
+      const dummyFacilities = [
+        {
+          id: 1,
+          name: "행복요양원",
+          type: "요양원",
+          address: "서울시 강남구 테헤란로 123",
+          status: "approved",
+          phone: "02-123-4567",
+          rating: 4.2,
+          reviewCount: 10,
+          createdAt: "2023-05-01",
+        },
+        {
+          id: 2,
+          name: "미소요양병원",
+          type: "요양병원",
+          address: "서울시 서초구 서초대로 456",
+          status: "approved",
+          phone: "02-234-5678",
+          rating: 4.0,
+          reviewCount: 8,
+          createdAt: "2023-06-10",
+        },
+        {
+          id: 3,
+          name: "푸른실버타운",
+          type: "실버타운",
+          address: "경기도 고양시 일산동구 중앙로 789",
+          status: "approved",
+          phone: "031-345-6789",
+          rating: 3.8,
+          reviewCount: 12,
+          createdAt: "2023-07-15",
+        },
+      ];
+      setFacilities(dummyFacilities);
+      setIsLoading(false);
+    }, 1000);
   }, []);
 
-  const handleViewDetail = (id) => navigate(`/admin/facilities/${id}`);
+  const handleViewDetail = (id) => {
+    navigate(`/admin/facilities/${id}`);
+  }  
+
   const handleEdit = (id) => navigate(`/admin/facilities/${id}/edit`);
   const handleDelete = (id) => {
     if (window.confirm("정말로 이 시설을 삭제하시겠습니까?")) {
@@ -87,9 +82,7 @@ const FacilitiesListPage = () => {
   const handleTypeFilterChange = (e) => setFilterType(e.target.value);
   const handleStatusChange = (id, newStatus) => {
     setFacilities((prev) =>
-      prev.map((f) =>
-        f.id === id ? { ...f, status: newStatus } : f
-      )
+      prev.map((f) => (f.id === id ? { ...f, status: newStatus } : f))
     );
   };
   const handlePageChange = (page) => setCurrentPage(page);
@@ -114,22 +107,31 @@ const FacilitiesListPage = () => {
     switch (status) {
       case "approved":
         return (
-          <span className="badge green">승인</span>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+            승인
+          </span>
         );
       case "pending":
         return (
-          <span className="badge yellow">대기중</span>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+            대기중
+          </span>
         );
       case "rejected":
         return (
-          <span className="badge red">거부됨</span>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+            거부됨
+          </span>
         );
       default:
         return (
-          <span className="badge gray">알 수 없음</span>
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">
+            알 수 없음
+          </span>
         );
     }
   };
+  
 
   if (isLoading) {
     return (
@@ -156,89 +158,121 @@ const FacilitiesListPage = () => {
           </Button>
         </div>
 
-        <div className="admin-filters flex gap-4 my-4">
-          <div className="admin-search flex items-center border px-3 py-2 rounded-md">
-            <FaSearch className="text-gray-400 mr-2" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="시설명 또는 주소로 검색"
-              className="outline-none bg-transparent"
-            />
-          </div>
 
-          <select
-            value={filterStatus}
-            onChange={handleStatusFilterChange}
-            className="admin-filter-select"
-          >
-            <option value="all">모든 상태</option>
-            <option value="approved">승인됨</option>
-            <option value="pending">대기중</option>
-            <option value="rejected">거부됨</option>
-          </select>
 
-          <select
-            value={filterType}
-            onChange={handleTypeFilterChange}
-            className="admin-filter-select"
-          >
-            <option value="all">모든 유형</option>
-            <option value="요양원">요양원</option>
-            <option value="요양병원">요양병원</option>
-            <option value="실버타운">실버타운</option>
-            <option value="방문요양">방문요양</option>
-            <option value="방문간호">방문간호</option>
-            <option value="주야간보호">주야간보호</option>
-          </select>
-        </div>
+        {/* 필터 영역 */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4 mb-6">
+  {/* 검색창 */}
+  <div className="relative w-full">
+  <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+  <input
+    type="text"
+    placeholder="시설명 검색"
+    value={searchTerm}
+    onChange={handleSearchChange}
+    className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-md text-sm placeholder-gray-400 bg-white outline-none"
+  />
+</div>
 
+
+
+
+
+  {/* 필터 셀렉트 */}
+  <div className="w-full sm:w-1/3">
+    <select
+      value={filterType}
+      onChange={handleTypeFilterChange}
+      className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-800 focus:outline-none"
+    >
+      <option value="all">전체</option>
+      <option value="요양원">요양원</option>
+      <option value="요양병원">요양병원</option>
+      <option value="실버타운">실버타운</option>
+      <option value="방문요양">방문요양</option>
+      <option value="방문간호">방문간호</option>
+      <option value="주야간보호">주야간보호</option>
+    </select>
+  </div>
+</div>
+
+
+
+        {/* 테이블 영역 */}
         {currentFacilities.length === 0 ? (
-          <p>검색 조건에 맞는 시설이 없습니다.</p>
+          <div className="admin-empty-state py-10 text-center text-gray-500 text-sm">
+            검색 조건에 맞는 시설이 없습니다.
+          </div>
         ) : (
           <>
-            <table className="admin-table w-full text-left border-collapse">
-              <thead>
-                <tr>
-                  <th>시설명</th>
-                  <th>유형</th>
-                  <th>주소</th>
-                  <th>연락처</th>
-                  <th>상태</th>
-                  <th>평점</th>
-                  <th>등록일</th>
-                  <th>관리</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentFacilities.map((facility) => (
-                  <tr key={facility.id}>
-                    <td>{facility.name}</td>
-                    <td>{facility.type}</td>
-                    <td>{facility.address}</td>
-                    <td>{facility.phone || "-"}</td>
-                    <td>{getStatusBadge(facility.status)}</td>
-                    <td>
-                      {facility.status === "approved"
-                        ? `${facility.rating} (${facility.reviewCount})`
-                        : "-"}
-                    </td>
-                    <td>{formatDate(facility.createdAt)}</td>
-                    <td className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(facility.id)}>수정</Button>
-                      {facility.status === "pending" && (
-                        <>
-                          <Button size="sm" variant="success" onClick={() => handleStatusChange(facility.id, "approved")}>승인</Button>
-                          <Button size="sm" variant="danger" onClick={() => handleStatusChange(facility.id, "rejected")}>거부</Button>
-                        </>
-                      )}
-                      <Button size="sm" variant="danger" onClick={() => handleDelete(facility.id)}>삭제</Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="admin-table-container">
+  <table className="admin-table ">
+    <thead>
+      <tr>
+        <th className="px-6 py-4">시설명</th>
+        <th className="px-6 py-4">유형</th>
+        <th className="px-6 py-4">주소</th>
+        <th className="px-6 py-4">상태</th>
+        <th className="px-6 py-4">관리</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-gray-100">
+      {currentFacilities.map((facility) => (
+        <tr key={facility.id} className="h-16">
+          <td>{facility.name}</td>
+          <td>{facility.type}</td>
+          <td>{facility.address}</td>
+          <td>{getStatusBadge(facility.status)}</td>
+          <td className="px-6 py-4">
+  <div className="flex justify-start items-center gap-5">
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => handleViewDetail(facility.id)}
+    >
+      <Eye className="w-5 h-5 text-blue-500" />
+    </Button>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => handleEdit(facility.id)}
+    >
+      <Pencil className="w-5 h-5 text-orange-500" />
+    </Button>
+    {facility.status === "pending" && (
+      <>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => handleStatusChange(facility.id, "approved")}
+        >
+          <span className="text-green-600 text-xs">승인</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => handleStatusChange(facility.id, "rejected")}
+        >
+          <span className="text-red-500 text-xs">거부</span>
+        </Button>
+      </>
+    )}
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => handleDelete(facility.id)}
+    >
+      <Trash2 className="w-5 h-5 text-red-500" />
+    </Button>
+  </div>
+</td>
+
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
             {totalFilteredPages > 1 && (
               <div className="admin-pagination flex gap-2 mt-4">

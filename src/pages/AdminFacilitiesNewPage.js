@@ -210,6 +210,7 @@ const handleRemoveMedicalEquipment = (index) => {
                   <label>주말 운영시간</label>
                   <Input name="weekendHours" placeholder="예: 10:00 - 15:00" value={formData.weekendHours} onChange={handleChange} />
                 </div>
+                
               </div>
 
               <div className="form-row">
@@ -221,10 +222,11 @@ const handleRemoveMedicalEquipment = (index) => {
                   <label>면회시간</label>
                   <Input name="visitingHours" placeholder="예: 13:30 - 17:00" value={formData.visitingHours} onChange={handleChange} />
                 </div>
+                
               </div>
 
             </div>
-            <div className="form-section">
+            <div className="form-section1">
               <h2>시설 이미지</h2>
               <div className="image-upload-area" onClick={() => document.getElementById("image-upload-input").click()}>
                 <img src="/icons/upload-photo.png" alt="사진 업로드" className="image-upload-icon-img" />

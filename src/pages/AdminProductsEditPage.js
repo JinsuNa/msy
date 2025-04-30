@@ -33,16 +33,9 @@ const AdminProductsEditPage = () => {
   })
 
   const featureOptions = [
-    "경량 디자인",
-    "접이식 구조",
-    "방수 가능",
-    "미끄럼 방지",
-    "조절 가능한 높이",
-    "인체공학적 설계",
-    "쉬운 세척",
-    "내구성 강화",
-    "휴대성 우수",
-    "안전 잠금 장치",
+    "경량 디자인", "접이식 구조", "방수 가능", "미끄럼 방지",
+    "조절 가능한 높이", "인체공학적 설계", "쉬운 세척",
+    "내구성 강화", "휴대성 우수", "안전 잠금 장치",
   ]
 
   const handleChange = (e) => {
@@ -88,13 +81,12 @@ const AdminProductsEditPage = () => {
 
   return (
     <div className="bg-white px-6 py-10 max-w-5xl mx-auto text-sm">
-    <div className="mb-6">
-  <Link to="/admin/products" className="flex items-center gap-1 text-lg font-semibold text-gray-700">
-    <ChevronLeft className="h-5 w-5" />
-    <span>상품 정보 수정</span>
-  </Link>
-</div>
-
+      <div className="mb-6">
+        <Link to="/admin/products" className="flex items-center gap-1 text-lg font-semibold text-gray-700">
+          <ChevronLeft className="h-5 w-5" />
+          <span>상품 정보 수정</span>
+        </Link>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -114,30 +106,25 @@ const AdminProductsEditPage = () => {
             <label className="block text-sm font-medium">재고 수량</label>
             <Input name="stock" type="number" value={formData.stock} onChange={handleChange} placeholder="재고수량을 입력하세요" />
 
-           {/* 프로모션 상품 체크박스 */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="isPromoted"
-                  checked={formData.isPromoted}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <span className="text-sm">프로모션 상품</span>
-              </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="isPromoted"
+                checked={formData.isPromoted}
+                onChange={handleChange}
+              />
+              <span className="text-sm">프로모션 상품</span>
+            </div>
 
-              {/* 추천 상품 체크박스 */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="isRecommended"
-                  checked={formData.isRecommended}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <span className="text-sm">추천 상품</span>
-              </div>
-
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="isRecommended"
+                checked={formData.isRecommended}
+                onChange={handleChange}
+              />
+              <span className="text-sm">추천 상품</span>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -155,87 +142,59 @@ const AdminProductsEditPage = () => {
                     type="checkbox"
                     checked={formData.features.includes(feature)}
                     onChange={() => handleFeatureToggle(feature)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <span className="text-sm">{feature}</span>
                 </label>
               ))}
             </div>
-
           </div>
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-base font-semibold">상품 사양</h2>
-            <Button
-              type="button"
-              onClick={handleAddSpec}
-              className="border border-gray-300 text-sm text-gray-700 rounded px-3 py-1 hover:bg-gray-100"
-            >
+            <Button type="button" onClick={handleAddSpec}>
               + 사양 추가
             </Button>
           </div>
 
           <div className="space-y-2">
             {formData.specifications.map((spec, idx) => (
-              <div key={idx} className="flex items-center gap-2">
-                {idx < 4 ? (
-                  <>
-                    <Input
-                      value={spec.label}
-                      readOnly
-                      className="bg-gray-100 w-[160px] h-[40px] text-sm"
-                    />
-                    <Input
-                      value={spec.value}
-                      onChange={(e) => handleSpecChange(idx, "value", e.target.value)}
-                      placeholder="값 입력"
-                      className="h-[40px] text-sm"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Input
-                      value={spec.label}
-                      onChange={(e) => handleSpecChange(idx, "label", e.target.value)}
-                      placeholder="항목 입력"
-                      className="w-[160px] h-[40px] text-sm"
-                    />
-                    <div className="flex items-center relative w-full h-[40px]">
-                      <Input
-                        className="w-full h-full pr-10 text-sm"
-                        value={spec.value}
-                        onChange={(e) => handleSpecChange(idx, "value", e.target.value)}
-                        placeholder="값 입력"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveSpec(idx)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </>
-                )}
+              <div key={idx} className="spec-item-row">
+                <Input
+                  value={spec.label}
+                  readOnly={idx < 4 ? true : false}
+                  onChange={(e) => handleSpecChange(idx, "label", e.target.value)}
+                  placeholder="항목 입력"
+                  className="spec-label-input"
+                />
+                <div className="spec-value-wrapper">
+                  <Input
+                    value={spec.value}
+                    onChange={(e) => handleSpecChange(idx, "value", e.target.value)}
+                    placeholder="값 입력"
+                    className="spec-value-input"
+                  />
+                  {idx >= 4 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSpec(idx)}
+                      className="remove-spec-btn"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
         <div className="flex justify-end gap-2 mt-8">
-          <Button
-            type="button"
-            onClick={() => navigate("/admin/products")}
-            className="facility-button cancel"
-          >
+          <Button type="button" onClick={() => navigate("/admin/products")} className="facility-button cancel">
             취소
           </Button>
-          <Button
-            type="submit"
-            className="facility-button submit"
-          >
+          <Button type="submit" className="facility-button submit">
             저장하기
           </Button>
         </div>

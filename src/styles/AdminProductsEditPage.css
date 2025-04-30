@@ -152,24 +152,66 @@ input[type="checkbox"] {
   height: 16px;
   margin-right: 6px;
 }
-/* 항목 입력 인풋 (label 입력칸) 사이즈 */
+.spec-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .spec-label-input {
-  width: 160px;
   height: 40px;
   font-size: 14px;
+  padding: 8px 12px;
+  width: 200px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
+
+.spec-value-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.spec-value-input {
+  height: 40px;
+  font-size: 14px;
+  padding: 8px 12px;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+  padding-right: 30px; /* X 버튼 공간 확보 */
+}
+
+.remove-spec-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #999;
+  cursor: pointer;
+}
+
+.remove-spec-btn:hover {
+  color: #333;
+}
+
+
 /* 공통 버튼 스타일 */
 .facility-button {
-  padding: 8px 20px;
+  height: 42px;
+  width: 120px; /* ✅ 너비를 고정해버리자 */
+  padding: 0 16px;
   font-size: 14px;
   border-radius: 6px;
   font-weight: 500;
-  min-width: 100px;
-  height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 /* 취소 버튼 */

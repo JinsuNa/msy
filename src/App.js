@@ -31,6 +31,7 @@ import AdminProductsEditPage from "./pages/AdminProductsEditPage";
 import AdminFacilitiesNewPage from "./pages/AdminFacilitiesNewPage";
 import AdminFacilitiesEditPage from "./pages/AdminFacilitiesEditPage";
 import AdminQuestionsDetailPage from "./pages/AdminQuestionsDetailPage";
+import AdminUserPage from "./pages/admin/AdminUserPage"
 
 import BottomNavigation from "./components/BottomNavigation";
 import ChatbotButton from "./components/chatbot/ChatbotButton"; 
@@ -96,6 +97,8 @@ function App() {
               <Route path="/admin/facilities/new" element={<AdminFacilitiesNewPage />} />
               <Route path="/admin/facilities/:id/edit" element={<AdminFacilitiesEditPage />} />
               <Route path="/admin/questions/:id" element={<AdminQuestionsDetailPage />} />
+              <Route path="/admin/users" element={<AdminUserPage />} />
+
             </Routes>
           </CartProvider>
         </FavoritesProvider>

@@ -82,6 +82,7 @@
   left: 0.75rem;
   transform: translateY(-50%);
   pointer-events: none;
+  
 }
 
 /* 검색창 돋보기 아이콘 색상 조정 */
@@ -315,3 +316,4 @@
   font-size: 0.75rem;
   color: #ef4444;
 }
+
